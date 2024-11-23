@@ -1,0 +1,198 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <!--This to lines are added to separate build process between .NET & .NET Standard-->
+    <BaseOutputPath>$(MSBuildProjectDirectory)/obj/net20/$(MSBuildProjectName)/bin</BaseOutputPath>
+    <BaseIntermediateOutputPath>$(MSBuildProjectDirectory)/obj/net20/$(MSBuildProjectName)/obj</BaseIntermediateOutputPath>
+    <Version Condition="'$(Version)' == ''">1.1.1.0</Version>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{98AE4C44-8CD6-49F0-84ED-DC74F5692EBB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Plugin.ReflectionSearch</RootNamespace>
+    <AssemblyName>Plugin.ReflectionSearch</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="SAL.Flatbed, Version=1.2.9.2, Culture=neutral, PublicKeyToken=a8ac5fc45c3adb8d, processorArchitecture=MSIL">
+      <HintPath>..\packages\SAL.Flatbed.1.2.9.2\lib\net20\SAL.Flatbed.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="SAL.Windows, Version=1.2.9.2, Culture=neutral, PublicKeyToken=a8ac5fc45c3adb8d, processorArchitecture=MSIL">
+      <HintPath>..\packages\SAL.Windows.1.2.9.2\lib\net20\SAL.Windows.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\WinForms.Shared\ContextMenuStripCopy.cs">
+      <Link>Controls\ContextMenuStripCopy.cs</Link>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="..\WinForms.Shared\DbListView.cs">
+      <Link>Controls\DbListView.cs</Link>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="..\WinForms.Shared\SystemImageList.cs">
+      <Link>Controls\SystemImageList.cs</Link>
+    </Compile>
+    <Compile Include="Bll\ControlType.cs" />
+    <Compile Include="Bll\NodeExtender.cs" />
+    <Compile Include="Bll\SearchFilter.cs" />
+    <Compile Include="Bll\SearchPluginWrapper.cs" />
+    <Compile Include="Bll\Sign.cs" />
+    <Compile Include="Bll\TypeExtender.cs" />
+    <Compile Include="Constant.cs" />
+    <Compile Include="Controls\AdvancedSearchDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\AdvancedSearchDlg.Designer.cs">
+      <DependentUpon>AdvancedSearchDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Filters\BooleanCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Filters\BooleanCtrl.Designer.cs">
+      <DependentUpon>BooleanCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Filters\DateCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Filters\DateCtrl.Designer.cs">
+      <DependentUpon>DateCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Filters\EnumCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Filters\EnumCtrl.Designer.cs">
+      <DependentUpon>EnumCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Filters\FilterCtrlBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Filters\FilterCtrlBase.Designer.cs">
+      <DependentUpon>FilterCtrlBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Filters\IFilterCtrl.cs" />
+    <Compile Include="Controls\Filters\IntegerCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Filters\IntegerCtrl.Designer.cs">
+      <DependentUpon>IntegerCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Filters\StringCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Filters\StringCtrl.Designer.cs">
+      <DependentUpon>StringCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FolderBrowserDialog2.cs" />
+    <Compile Include="Controls\ReflectionSearchDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\ReflectionSearchDlg.Designer.cs">
+      <DependentUpon>ReflectionSearchDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ReflectionTreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PanelSearch.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PanelSearch.Designer.cs">
+      <DependentUpon>PanelSearch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PluginWindows.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Bll\SearchEngine.cs" />
+    <Compile Include="Shell32.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Controls\AdvancedSearchDlg.resx">
+      <DependentUpon>AdvancedSearchDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Filters\BooleanCtrl.resx">
+      <DependentUpon>BooleanCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Filters\DateCtrl.resx">
+      <DependentUpon>DateCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Filters\EnumCtrl.resx">
+      <DependentUpon>EnumCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Filters\FilterCtrlBase.resx">
+      <DependentUpon>FilterCtrlBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Filters\IntegerCtrl.resx">
+      <DependentUpon>IntegerCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Filters\StringCtrl.resx">
+      <DependentUpon>StringCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ReflectionSearchDlg.resx">
+      <DependentUpon>ReflectionSearchDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PanelSearch.resx">
+      <DependentUpon>PanelSearch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="Properties\iconSearch.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\iconSearchFilter.bmp" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="BeforeBuild">
+    <ItemGroup>
+      <AssemblyAttributes Include="AssemblyVersion">
+        <_Parameter1>$(Version)</_Parameter1>
+      </AssemblyAttributes>
+      <AssemblyAttributes Include="AssemblyFileVersion">
+        <_Parameter1>$(Version)</_Parameter1>
+      </AssemblyAttributes>
+      <AssemblyAttributes Include="AssemblyInformationalVersion">
+        <_Parameter1>$(Version)</_Parameter1>
+      </AssemblyAttributes>
+    </ItemGroup>
+    <MakeDir Directories="$(IntermediateOutputPath)" />
+    <WriteCodeFragment Language="C#" OutputFile="$(IntermediateOutputPath)Version.cs" AssemblyAttributes="@(AssemblyAttributes)" />
+    <ItemGroup>
+      <Compile Include="$(IntermediateOutputPath)Version.cs" />
+    </ItemGroup>
+  </Target>
+</Project>
