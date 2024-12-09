@@ -179,8 +179,8 @@ namespace Plugin.ReflectionSearch
 				SearchPluginWrapper plugin = this.GetSelectedPlugin();
 				if(plugin != null)
 				{
-					var dlg = new Controls.FolderBrowserDialog2();
-					if(dlg.ShowDialog(Handle) == true)
+					Controls.FolderBrowserDialog2 dlg = new Controls.FolderBrowserDialog2();
+					if(dlg.ShowDialog(this.Handle) == true)
 					{
 						Object[] items = plugin.GetSearchObjects(dlg.ResultPath);
 						if(items != null && items.Length > 0)
@@ -197,7 +197,7 @@ namespace Plugin.ReflectionSearch
 		private ListViewItem CreateListItem(ThreadArrayArgs args, Int32 index)
 		{
 			ListViewItem result = new ListViewItem();
-			String[] subItems = Array.ConvertAll<String, String>(new String[lvResult.Columns.Count], delegate(String a) { return String.Empty; });
+			String[] subItems = Array.ConvertAll(new String[lvResult.Columns.Count], (String) => { return String.Empty; });
 			result.SubItems.AddRange(subItems);
 
 			String filePath = args.Files[index];
@@ -339,7 +339,7 @@ namespace Plugin.ReflectionSearch
 
 				this._itemsFetched = 0;
 				this._itemsMax = (UInt64)Convert.ToInt64(e.UserState);
-				tsslStatus.Text = String.Format("Searching... {0:n0}/", this._itemsMax);
+				tsslStatus.Text = $"Searching... {this._itemsMax:n0}/";
 
 			} else if(e.ProgressPercentage == 100)
 			{
@@ -411,18 +411,18 @@ namespace Plugin.ReflectionSearch
 			case Keys.C:
 				if(e.Control && !e.Alt)
 				{
-					cmsResult_ItemClicked(sender, new ToolStripItemClickedEventArgs(tsmiResultCopy));
+					this.cmsResult_ItemClicked(sender, new ToolStripItemClickedEventArgs(tsmiResultCopy));
 					e.Handled = true;
 				}
 				break;
 			case Keys.Delete:
-				cmsResult_ItemClicked(sender, new ToolStripItemClickedEventArgs(tsmiResultDelete));
+				this.cmsResult_ItemClicked(sender, new ToolStripItemClickedEventArgs(tsmiResultDelete));
 				e.Handled = true;
 				break;
 			case Keys.Return:
 				if(lvResult.SelectedItems.Count > 0)
 				{
-					cmsResult_ItemClicked(sender, new ToolStripItemClickedEventArgs(tsmiResultOpenFileLocation));
+					this.cmsResult_ItemClicked(sender, new ToolStripItemClickedEventArgs(tsmiResultOpenFileLocation));
 					e.Handled = true;
 				}
 				break;
