@@ -110,6 +110,12 @@
       <DependentUpon>StringCtrl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\FolderBrowserDialog2.cs" />
+    <Compile Include="Controls\MessageCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MessageCtrl.Designer.cs">
+      <DependentUpon>MessageCtrl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ReflectionSearchDlg.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -156,6 +162,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Filters\StringCtrl.resx">
       <DependentUpon>StringCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\MessageCtrl.resx">
+      <DependentUpon>MessageCtrl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ReflectionSearchDlg.resx">
       <DependentUpon>ReflectionSearchDlg.cs</DependentUpon>

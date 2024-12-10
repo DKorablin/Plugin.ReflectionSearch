@@ -10,10 +10,11 @@ namespace Plugin.ReflectionSearch.Controls
 	internal class ReflectionTreeView : TreeView
 	{
 		private Assembly RootAssembly { get { return base.Nodes.Count == 0 ? null : ((Type)base.Nodes[0].Tag).Assembly; } }
-		public ReflectionTreeView()
-			=> base.BeforeExpand += new TreeViewCancelEventHandler(ReflectionTreeView_BeforeExpand);
 
-		void ReflectionTreeView_BeforeExpand(Object sender, TreeViewCancelEventArgs e)
+		public ReflectionTreeView()
+			=> base.BeforeExpand += new TreeViewCancelEventHandler(this.ReflectionTreeView_BeforeExpand);
+
+		private void ReflectionTreeView_BeforeExpand(Object sender, TreeViewCancelEventArgs e)
 		{
 			if(e.Action == TreeViewAction.Expand && e.Node.IsClosedEmptyNode())
 			{
@@ -80,6 +81,7 @@ namespace Plugin.ReflectionSearch.Controls
 			TreeNode rootNode = new TreeNode(root.ToString()) { Tag = root, };
 			rootNode.Nodes.Add(ReflectionTreeView.CreateEmptyNode());
 			base.Nodes.Add(rootNode);
+			rootNode.Expand();
 		}
 
 		private static TreeNode CreateEmptyNode()

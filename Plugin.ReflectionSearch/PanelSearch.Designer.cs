@@ -41,14 +41,15 @@
 			this.bgSearch = new System.ComponentModel.BackgroundWorker();
 			this.splitMain = new System.Windows.Forms.SplitContainer();
 			this.lvPlugins = new System.Windows.Forms.ListView();
-			this.lvResult = new AlphaOmega.Windows.Forms.DbListView();
-			this.colName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.colReflectedType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.colString = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.cmsResult = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsmiResultOpenFileLocation = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsmiResultCopy = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsmiResultDelete = new System.Windows.Forms.ToolStripMenuItem();
+			this.tableFilters = new System.Windows.Forms.TableLayoutPanel();
+			this.lvResult = new AlphaOmega.Windows.Forms.DbListView();
+			this.colName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.colReflectedType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.colString = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			ssMain = new System.Windows.Forms.StatusStrip();
 			colPlugin = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			ResultSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -90,7 +91,7 @@
 			// ResultSeparator1
 			// 
 			ResultSeparator1.Name = "ResultSeparator1";
-			ResultSeparator1.Size = new System.Drawing.Size(125, 6);
+			ResultSeparator1.Size = new System.Drawing.Size(173, 6);
 			// 
 			// tsMain
 			// 
@@ -101,7 +102,7 @@
             this.tsbnSearch});
 			this.tsMain.Location = new System.Drawing.Point(0, 0);
 			this.tsMain.Name = "tsMain";
-			this.tsMain.Size = new System.Drawing.Size(269, 31);
+			this.tsMain.Size = new System.Drawing.Size(269, 27);
 			this.tsMain.TabIndex = 0;
 			// 
 			// tsbnSearchFilters
@@ -112,10 +113,9 @@
 			this.tsbnSearchFilters.Image = global::Plugin.ReflectionSearch.Properties.Resources.iconSearchFilter;
 			this.tsbnSearchFilters.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.tsbnSearchFilters.Name = "tsbnSearchFilters";
-			this.tsbnSearchFilters.Size = new System.Drawing.Size(39, 28);
+			this.tsbnSearchFilters.Size = new System.Drawing.Size(39, 24);
 			this.tsbnSearchFilters.Text = "Filters";
 			this.tsbnSearchFilters.ButtonClick += new System.EventHandler(this.tsbnSearchFilters_ButtonClick);
-			this.tsbnSearchFilters.DropDownOpening += new System.EventHandler(this.tsbnSearchFilters_DropDownOpening);
 			this.tsbnSearchFilters.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.tsbnSearchFilters_DropDownItemClicked);
 			// 
 			// tsmiFilterEmpty
@@ -133,7 +133,7 @@
 			this.tsbnSearch.Image = global::Plugin.ReflectionSearch.Properties.Resources.iconSearch;
 			this.tsbnSearch.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.tsbnSearch.Name = "tsbnSearch";
-			this.tsbnSearch.Size = new System.Drawing.Size(29, 28);
+			this.tsbnSearch.Size = new System.Drawing.Size(29, 24);
 			this.tsbnSearch.Text = "Search";
 			this.tsbnSearch.ToolTipText = "Search";
 			this.tsbnSearch.Click += new System.EventHandler(this.tsbnSearch_Click);
@@ -159,6 +159,7 @@
 			// splitMain.Panel2
 			// 
 			this.splitMain.Panel2.Controls.Add(this.lvResult);
+			this.splitMain.Panel2.Controls.Add(this.tableFilters);
 			this.splitMain.Panel2.Controls.Add(this.tsMain);
 			this.splitMain.Size = new System.Drawing.Size(444, 394);
 			this.splitMain.SplitterDistance = 170;
@@ -183,6 +184,47 @@
 			this.lvPlugins.View = System.Windows.Forms.View.Details;
 			this.lvPlugins.SelectedIndexChanged += new System.EventHandler(this.lvPlugins_SelectedIndexChanged);
 			// 
+			// cmsResult
+			// 
+			this.cmsResult.ImageScalingSize = new System.Drawing.Size(20, 20);
+			this.cmsResult.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiResultOpenFileLocation,
+            this.tsmiResultCopy,
+            ResultSeparator1,
+            this.tsmiResultDelete});
+			this.cmsResult.Name = "cmsResult";
+			this.cmsResult.Size = new System.Drawing.Size(177, 82);
+			this.cmsResult.Opening += new System.ComponentModel.CancelEventHandler(this.cmsResult_Opening);
+			this.cmsResult.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.cmsResult_ItemClicked);
+			// 
+			// tsmiResultOpenFileLocation
+			// 
+			this.tsmiResultOpenFileLocation.Name = "tsmiResultOpenFileLocation";
+			this.tsmiResultOpenFileLocation.Size = new System.Drawing.Size(176, 24);
+			this.tsmiResultOpenFileLocation.Text = "&Show in Folder";
+			// 
+			// tsmiResultCopy
+			// 
+			this.tsmiResultCopy.Name = "tsmiResultCopy";
+			this.tsmiResultCopy.Size = new System.Drawing.Size(176, 24);
+			this.tsmiResultCopy.Text = "&Copy";
+			// 
+			// tsmiResultDelete
+			// 
+			this.tsmiResultDelete.Name = "tsmiResultDelete";
+			this.tsmiResultDelete.Size = new System.Drawing.Size(176, 24);
+			this.tsmiResultDelete.Text = "&Delete";
+			// 
+			// tableFilters
+			// 
+			this.tableFilters.AutoSize = true;
+			this.tableFilters.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableFilters.Dock = System.Windows.Forms.DockStyle.Top;
+			this.tableFilters.Location = new System.Drawing.Point(0, 27);
+			this.tableFilters.Name = "tableFilters";
+			this.tableFilters.Size = new System.Drawing.Size(269, 0);
+			this.tableFilters.TabIndex = 2;
+			// 
 			// lvResult
 			// 
 			this.lvResult.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
@@ -194,10 +236,10 @@
 			this.lvResult.FullRowSelect = true;
 			this.lvResult.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
 			this.lvResult.HideSelection = false;
-			this.lvResult.Location = new System.Drawing.Point(0, 31);
+			this.lvResult.Location = new System.Drawing.Point(0, 27);
 			this.lvResult.Margin = new System.Windows.Forms.Padding(4);
 			this.lvResult.Name = "lvResult";
-			this.lvResult.Size = new System.Drawing.Size(269, 363);
+			this.lvResult.Size = new System.Drawing.Size(269, 367);
 			this.lvResult.TabIndex = 1;
 			this.lvResult.UseCompatibleStateImageBehavior = false;
 			this.lvResult.View = System.Windows.Forms.View.Details;
@@ -219,37 +261,6 @@
 			// 
 			this.colString.DisplayIndex = 1;
 			this.colString.Text = "String";
-			// 
-			// cmsResult
-			// 
-			this.cmsResult.ImageScalingSize = new System.Drawing.Size(20, 20);
-			this.cmsResult.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiResultOpenFileLocation,
-            this.tsmiResultCopy,
-            ResultSeparator1,
-            this.tsmiResultDelete});
-			this.cmsResult.Name = "cmsResult";
-			this.cmsResult.Size = new System.Drawing.Size(129, 82);
-			this.cmsResult.Opening += new System.ComponentModel.CancelEventHandler(this.cmsResult_Opening);
-			this.cmsResult.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.cmsResult_ItemClicked);
-			// 
-			// tsmiResultOpenFileLocation
-			// 
-			this.tsmiResultOpenFileLocation.Name = "tsmiResultOpenFileLocation";
-			this.tsmiResultOpenFileLocation.Size = new System.Drawing.Size(128, 24);
-			this.tsmiResultOpenFileLocation.Text = "&Explore";
-			// 
-			// tsmiResultCopy
-			// 
-			this.tsmiResultCopy.Name = "tsmiResultCopy";
-			this.tsmiResultCopy.Size = new System.Drawing.Size(128, 24);
-			this.tsmiResultCopy.Text = "&Copy";
-			// 
-			// tsmiResultDelete
-			// 
-			this.tsmiResultDelete.Name = "tsmiResultDelete";
-			this.tsmiResultDelete.Size = new System.Drawing.Size(128, 24);
-			this.tsmiResultDelete.Text = "&Delete";
 			// 
 			// PanelSearch
 			// 
@@ -293,5 +304,6 @@
 		private System.Windows.Forms.ToolStripMenuItem tsmiResultOpenFileLocation;
 		private System.Windows.Forms.ToolStripMenuItem tsmiResultCopy;
 		private System.Windows.Forms.ToolStripMenuItem tsmiResultDelete;
+		private System.Windows.Forms.TableLayoutPanel tableFilters;
 	}
 }

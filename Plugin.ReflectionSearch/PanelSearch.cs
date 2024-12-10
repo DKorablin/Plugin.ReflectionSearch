@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using AlphaOmega.Windows.Forms;
 using Plugin.ReflectionSearch.Bll;
+using Plugin.ReflectionSearch.Controls;
 using Plugin.ReflectionSearch.Search;
 using SAL.Flatbed;
 using SAL.Windows;
@@ -17,12 +19,14 @@ namespace Plugin.ReflectionSearch
 		private const String Caption = "Reflection Search";
 		private enum ThreadResult
 		{
-			/// <summary>Не найдено</summary>
+			/// <summary>Nothing found</summary>
 			None,
-			/// <summary>Найдено</summary>
+			/// <summary>Somethid is found inside object</summary>
 			Found,
-			/// <summary>Исключение</summary>
+			/// <summary>Exception occured while searching inside object</summary>
 			Exception,
+			/// <summary>Unknown or empty object</summary>
+			Empty,
 		}
 
 		private class ThreadArrayArgs
@@ -30,32 +34,63 @@ namespace Plugin.ReflectionSearch
 			public ThreadResult[] Result;
 			public String[] Messages;
 			public readonly String[] Files;
+			public readonly Dictionary<String, SearchFilter> Filters;
 			public readonly PanelSearch Panel;
 			public readonly ManualResetEvent DoneEvent;
 
-			public ThreadArrayArgs(String[] files, PanelSearch panel, ManualResetEvent doneEvt)
+			public ThreadArrayArgs(String[] files, PanelSearch panel, Dictionary<String,SearchFilter> filters, ManualResetEvent doneEvt)
 			{
 				this.Result = new ThreadResult[files.Length];
 				this.Messages = new String[files.Length];
 				this.Files = files;
+				this.Filters = filters;
 				this.Panel = panel;
 				this.DoneEvent = doneEvt;
 			}
 		}
+
+		private PluginWindows Plugin => (PluginWindows)this.Window.Plugin;
+		private IWindow Window => (IWindow)base.Parent;
+
 		//private static Int32 ThreadPoolCount = 0;
 		private Int32 ThreadsCount = 0;
 		private UInt64 _itemsMax = 0;
 		private UInt64 _itemsFetched = 0;
 		private volatile Boolean ThreadsTerminate = false;
-		private Dictionary<String, SearchFilter> _reflectionSearch;
 		private SystemImageList _smallImageList;
-		private PluginWindows Plugin => (PluginWindows)this.Window.Plugin;
-		private IWindow Window => (IWindow)base.Parent;
+
+		private Dictionary<String, Dictionary<String, SearchFilter>> _pluginsFilters = new Dictionary<String, Dictionary<String, SearchFilter>>();
+		private Dictionary<String,SearchFilter> ReflectionSearch
+		{
+			get
+			{
+				ListViewItem selecteditem = lvPlugins.SelectedItems.Count == 0 ? null : lvPlugins.SelectedItems[0];
+				if(selecteditem == null)
+					return new Dictionary<String, SearchFilter>();
+
+				if(!this._pluginsFilters.TryGetValue(selecteditem.Text, out Dictionary<String, SearchFilter> result))
+				{
+					result = new Dictionary<String, SearchFilter>();
+					this._pluginsFilters.Add(selecteditem.Text, result);
+				}
+				return result;
+			}
+			set
+			{
+				ListViewItem selectedItem = lvPlugins.SelectedItems.Count == 0 ? null : lvPlugins.SelectedItems[0];
+				if(selectedItem == null) return;
+
+				if(this._pluginsFilters.ContainsKey(selectedItem.Text))
+					this._pluginsFilters[selectedItem.Text] = value;
+				else
+					this._pluginsFilters.Add(selectedItem.Text, value);
+			}
+		}
 
 		public PanelSearch()
 		{
-			InitializeComponent();
-			_smallImageList = new SystemImageList(SystemImageListSize.SmallIcons);
+			this.InitializeComponent();
+			this._smallImageList = new SystemImageList(SystemImageListSize.SmallIcons);
 			SystemImageListHelper.SetImageList(lvResult, this._smallImageList, false);
 		}
 
@@ -88,11 +123,11 @@ namespace Plugin.ReflectionSearch
 			ListViewItem selectedItem = lvPlugins.SelectedItems.Count == 0 ? null : lvPlugins.SelectedItems[0];
 			tsMain.Enabled = selectedItem != null;
 			lvResult.Items.Clear();
-			this._reflectionSearch = null;
+			this.InvalidateFilters();
 
 			this.Window.Caption = selectedItem == null
 				? PanelSearch.Caption
-				: String.Join(" - ", new String[] { PanelSearch.Caption, selectedItem.Text, });
+				: PanelSearch.Caption + " - " + selectedItem.Text;
 		}
 
 		private SearchPluginWrapper GetSelectedPlugin()
@@ -109,53 +144,87 @@ namespace Plugin.ReflectionSearch
 		{
 			SearchPluginWrapper plugin = this.GetSelectedPlugin();
 			Type root = plugin.GetEntityType();
-			using(ReflectionSearchDlg dlg = new ReflectionSearchDlg(root, this._reflectionSearch))
+			using(ReflectionSearchDlg dlg = new ReflectionSearchDlg(root, this.ReflectionSearch))
 				if(dlg.ShowDialog() == DialogResult.OK)
 				{
-					this._reflectionSearch = dlg.Search;
-					lvResult.AllowDrop = tsbnSearch.Enabled = this._reflectionSearch.Count > 0;
+					this.ReflectionSearch = dlg.Search;
+					this.InvalidateFilters();
 				}
-		}
-
-		private void tsbnSearchFilters_DropDownOpening(Object sender, EventArgs e)
-		{
-			tsbnSearchFilters.DropDownItems.Clear();
-			if(this._reflectionSearch==null || this._reflectionSearch.Count == 0)
-				tsbnSearchFilters.DropDownItems.Add(tsmiFilterEmpty);
-			else
-			{
-				foreach(KeyValuePair<String, SearchFilter> item in this._reflectionSearch)
-				{
-					ToolStripMenuItem menuItem = new ToolStripMenuItem()
-					{
-						Text = String.Join(" ", new String[] { item.Key, item.Value.AsString(), }),
-						Tag = item.Key,
-					};
-					if(item.Value.Value == null)
-						menuItem.SetNull();
-					tsbnSearchFilters.DropDownItems.Add(menuItem);
-				}
-			}
 		}
 
 		private void tsbnSearchFilters_DropDownItemClicked(Object sender, ToolStripItemClickedEventArgs e)
 		{
 			if(e.ClickedItem != tsmiFilterEmpty)
 			{
-				String key = (String)e.ClickedItem.Tag;
-				if(this._reflectionSearch.Remove(key))
-					tsbnSearchFilters.DropDownItems.Remove(e.ClickedItem);
+				String filterKey = (String)e.ClickedItem.Tag;
+				this.ReflectionSearch.Remove(filterKey);
+				this.InvalidateFilters();
+			}
+		}
 
-				if(this._reflectionSearch.Count == 0)
+		private void MessageCtrl_OnClosed(Object sender, ControlEventArgs e)
+		{
+			String filterKey = (String)e.Control.Tag;
+			this.ReflectionSearch.Remove(filterKey);
+			this.InvalidateFilters();
+		}
+
+		private void InvalidateFilters()
+		{
+			var filters = this.ReflectionSearch;
+
+			this.SuspendLayout();
+			try
+			{
+				if(filters.Count > 0)
+				{
+					if(tsbnSearchFilters.DropDownItems.Count == 1 && tsbnSearchFilters.DropDownItems[0] == tsmiFilterEmpty)
+						tsbnSearchFilters.DropDownItems.Remove(tsmiFilterEmpty);
+
+					foreach(var filter in filters)
+						if(!tableFilters.Controls.OfType<MessageCtrl>().Any(c => String.Equals(filter.Key, c.Tag)))
+						{
+							MessageCtrl newCtrl = new MessageCtrl()
+							{
+								Tag = filter.Key,
+							};
+							newCtrl.OnClosed += MessageCtrl_OnClosed;
+							newCtrl.ShowMessage(MessageCtrl.StatusMessageType.None, filter.Key + ": " + filter.Value.AsString());
+							tableFilters.Controls.Add(newCtrl);
+
+							ToolStripMenuItem menuItem = new ToolStripMenuItem()
+							{
+								Text = String.Join(" ", new String[] { filter.Key, filter.Value.AsString(), }),
+								Tag = filter.Key,
+							};
+							if(filter.Value.Value == null)
+								menuItem.SetNull();
+							tsbnSearchFilters.DropDownItems.Add(menuItem);
+						}
+
+					for(Int32 loop = tableFilters.Controls.Count - 1; loop >= 0; loop--)
+						if(!filters.ContainsKey((String)tableFilters.Controls[loop].Tag))
+						{
+							tableFilters.Controls.RemoveAt(loop);
+							tsbnSearchFilters.DropDownItems.RemoveAt(loop);
+						}
+				}
+
+				if(filters.Count == 0)
 				{
 					lvResult.AllowDrop = false;
 					tsbnSearch.Enabled = false;
+					tableFilters.Controls.Clear();
+					tsbnSearchFilters.DropDownItems.Clear();
 					tsbnSearchFilters.DropDownItems.Add(tsmiFilterEmpty);
 				} else
 				{
 					lvResult.AllowDrop = true;
 					tsbnSearch.Enabled = true;
 				}
+			} finally
+			{
+				this.ResumeLayout(false);
 			}
 		}
 
@@ -204,10 +273,15 @@ namespace Plugin.ReflectionSearch
 			result.SubItems[colName.Index].Text = filePath;
 			result.ImageIndex = this._smallImageList.IconIndex(filePath);
 
-			if(args.Result[index] == ThreadResult.Exception)
+			switch(args.Result[index])
 			{
+			case ThreadResult.Exception:
 				result.SetException();
 				result.SubItems[colString.Index].Text = args.Messages[index];
+				break;
+			case ThreadResult.Empty:
+				result.SetNull();
+				break;
 			}
 			return result;
 		}
@@ -218,7 +292,7 @@ namespace Plugin.ReflectionSearch
 			try
 			{
 				PanelSearch pnl = args.Panel;
-				SearchEngine engine = new SearchEngine(pnl._reflectionSearch);
+				SearchEngine engine = new SearchEngine(pnl.ReflectionSearch);
 				SearchPluginWrapper plugin = args.Panel.GetSelectedPlugin();
 				for(Int32 loop = 0; loop < args.Files.Length; loop++)
 				{
@@ -226,18 +300,18 @@ namespace Plugin.ReflectionSearch
 						break;
 
 					Object searchInstance = null;
+					String filePath = args.Files[loop];
 					try
 					{
-						FileInfo info = new FileInfo(args.Files[loop]);
+						FileInfo info = new FileInfo(filePath);
 						if(info.Length == 0)
 						{
-							args.Result[loop] = ThreadResult.Exception;
-							args.Messages[loop] = "File length 0 bytes";
+							args.Result[loop] = ThreadResult.Empty;
 							continue;
 						}
-						searchInstance = plugin.CreateEntityInstance(args.Files[loop]);
+						searchInstance = plugin.CreateEntityInstance(filePath);
 
-						if(searchInstance == null)//TODO: Wee need to check for files with empty length
+						if(searchInstance == null)
 							args.Result[loop] = ThreadResult.None;
 						else if(engine.StartSearch(searchInstance))
 							args.Result[loop] = ThreadResult.Found;
@@ -250,13 +324,12 @@ namespace Plugin.ReflectionSearch
 					{
 						args.Result[loop] = ThreadResult.Exception;
 						args.Messages[loop] = exc.Message;
-						exc.Data.Add("File", args.Files[loop]);
+						exc.Data.Add("File", filePath);
 						args.Panel.Plugin.Trace.TraceData(TraceEventType.Error, 10, exc);
 					} finally
 					{
 						IDisposable disp = searchInstance == null ? null : searchInstance as IDisposable;
-						if(disp != null)
-							disp.Dispose();
+						disp?.Dispose();
 					}
 				}
 			} finally
@@ -290,7 +363,7 @@ namespace Plugin.ReflectionSearch
 						doneEventEx[threadIndex] = new ManualResetEvent(false);
 						String[] filesInThread = new String[numberInThread];
 						Array.Copy(filePath, arrayIndex, filesInThread, 0, filesInThread.Length);
-						args[threadIndex] = new ThreadArrayArgs(filesInThread, this, doneEventEx[threadIndex]);
+						args[threadIndex] = new ThreadArrayArgs(filesInThread, this, this.ReflectionSearch, doneEventEx[threadIndex]);
 						ThreadPool.QueueUserWorkItem(new WaitCallback(SearchAssemblyThreads), args[threadIndex]);
 						threadIndex++;
 						arrayIndex += numberInThread;

@@ -14,14 +14,14 @@ namespace Plugin.ReflectionSearch.Bll
 
 		public SearchFilter(Sign? sign, Object value)
 		{
-			Sign = sign;
-			Value = value;
+			this.Sign = sign;
+			this.Value = value;
 		}
 
 		public SearchFilter(Sign? sign, Object value, Type target)
 		{
-			Sign = sign;
-			Value = target.ConvertToType(value);
+			this.Sign = sign;
+			this.Value = target.ConvertToType(value);
 		}
 
 		public String AsString()

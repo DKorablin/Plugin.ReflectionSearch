@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Windows.Forms;
 using Plugin.ReflectionSearch.Bll;
 using Plugin.ReflectionSearch.Controls.Filters;
@@ -17,10 +16,10 @@ namespace Plugin.ReflectionSearch.Search
 
 		public ReflectionSearchDlg(Type root, Dictionary<String, SearchFilter> search)
 		{
-			InitializeComponent();
+			this.InitializeComponent();
 
 			tvHierarchy.DataBind(root);
-			if(search != null)
+			if(search.Count > 0)
 			{
 				this.Search = search;
 				TreeNode node = null;

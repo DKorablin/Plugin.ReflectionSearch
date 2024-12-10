@@ -23,6 +23,11 @@ namespace Plugin.ReflectionSearch.Bll
 		public static Boolean IsException(this ListViewItem item)
 			=> item.ForeColor == NodeExtender.ExceptionColor;
 
+		/// <summary>Mark current element as empty or nothing could be done with element</summary>
+		/// <param name="item">The item to set null color</param>
+		public static void SetNull(this ListViewItem item)
+			=> item.ForeColor = NodeExtender.NullColor;
+
 		/// <summary>Написать в узел исключение</summary>
 		/// <param name="node">Узел</param>
 		/// <param name="exc">Исключение</param>
