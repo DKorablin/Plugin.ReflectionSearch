@@ -17,37 +17,6 @@ namespace Plugin.ReflectionSearch
 	public partial class PanelSearch : UserControl
 	{
 		private const String Caption = "Reflection Search";
-		private enum ThreadResult
-		{
-			/// <summary>Nothing found</summary>
-			None,
-			/// <summary>Somethid is found inside object</summary>
-			Found,
-			/// <summary>Exception occured while searching inside object</summary>
-			Exception,
-			/// <summary>Unknown or empty object</summary>
-			Empty,
-		}
-
-		private class ThreadArrayArgs
-		{
-			public ThreadResult[] Result;
-			public String[] Messages;
-			public readonly String[] Files;
-			public readonly Dictionary<String, SearchFilter> Filters;
-			public readonly PanelSearch Panel;
-			public readonly ManualResetEvent DoneEvent;
-
-			public ThreadArrayArgs(String[] files, PanelSearch panel, Dictionary<String,SearchFilter> filters, ManualResetEvent doneEvt)
-			{
-				this.Result = new ThreadResult[files.Length];
-				this.Messages = new String[files.Length];
-				this.Files = files;
-				this.Filters = filters;
-				this.Panel = panel;
-				this.DoneEvent = doneEvt;
-			}
-		}
 
 		private PluginWindows Plugin => (PluginWindows)this.Window.Plugin;
 		private IWindow Window => (IWindow)base.Parent;
@@ -68,12 +37,9 @@ namespace Plugin.ReflectionSearch
 				if(selecteditem == null)
 					return new Dictionary<String, SearchFilter>();
 
-				if(!this._pluginsFilters.TryGetValue(selecteditem.Text, out Dictionary<String, SearchFilter> result))
-				{
-					result = new Dictionary<String, SearchFilter>();
-					this._pluginsFilters.Add(selecteditem.Text, result);
-				}
-				return result;
+				return this._pluginsFilters.TryGetValue(selecteditem.Text, out Dictionary<String, SearchFilter> result)
+					? result
+					: new Dictionary<String, SearchFilter>();
 			}
 			set
 			{
@@ -253,7 +219,10 @@ namespace Plugin.ReflectionSearch
 					{
 						Object[] items = plugin.GetSearchObjects(dlg.ResultPath);
 						if(items != null && items.Length > 0)
-							bgSearch.RunWorkerAsync(items);
+						{
+							SearchItemsArgs args = new SearchItemsArgs(items, this.ReflectionSearch);
+							bgSearch.RunWorkerAsync(args);
+						}
 					}
 				}
 			} catch(Exception)
@@ -263,23 +232,32 @@ namespace Plugin.ReflectionSearch
 			}
 		}
 
-		private ListViewItem CreateListItem(ThreadArrayArgs args, Int32 index)
+		private ListViewItem CreateListItem(SearchThreadsArgs args, Int32 index)
 		{
 			ListViewItem result = new ListViewItem();
 			String[] subItems = Array.ConvertAll(new String[lvResult.Columns.Count], (String) => { return String.Empty; });
 			result.SubItems.AddRange(subItems);
 
-			String filePath = args.Files[index];
+			String filePath = (String)args.ItemsForSearch[index];
 			result.SubItems[colName.Index].Text = filePath;
 			result.ImageIndex = this._smallImageList.IconIndex(filePath);
 
-			switch(args.Result[index])
+			var status = args.Result[index];
+			ListViewGroup groupItem = lvResult.Groups.Cast<ListViewGroup>().FirstOrDefault(g => g.Header == status.ToString());
+			if(groupItem == null)
 			{
-			case ThreadResult.Exception:
+				groupItem = new ListViewGroup(status.ToString());
+				lvResult.Groups.Add(groupItem);
+			}
+			result.Group = groupItem;
+
+			switch(status)
+			{
+			case SearchThreadsArgs.ThreadResult.Exception:
 				result.SetException();
 				result.SubItems[colString.Index].Text = args.Messages[index];
 				break;
-			case ThreadResult.Empty:
+			case SearchThreadsArgs.ThreadResult.Empty:
 				result.SetNull();
 				break;
 			}
@@ -288,41 +266,41 @@ namespace Plugin.ReflectionSearch
 
 		private static void SearchAssemblyThreads(Object state)
 		{
-			ThreadArrayArgs args = (ThreadArrayArgs)state;
+			SearchThreadsArgs args = (SearchThreadsArgs)state;
 			try
 			{
 				PanelSearch pnl = args.Panel;
-				SearchEngine engine = new SearchEngine(pnl.ReflectionSearch);
+				SearchEngine engine = new SearchEngine(args.Filters);
 				SearchPluginWrapper plugin = args.Panel.GetSelectedPlugin();
-				for(Int32 loop = 0; loop < args.Files.Length; loop++)
+				for(Int32 loop = 0; loop < args.ItemsForSearch.Length; loop++)
 				{
 					if(pnl.ThreadsTerminate == true)
 						break;
 
 					Object searchInstance = null;
-					String filePath = args.Files[loop];
+					String filePath = (String)args.ItemsForSearch[loop];
 					try
 					{
 						FileInfo info = new FileInfo(filePath);
 						if(info.Length == 0)
 						{
-							args.Result[loop] = ThreadResult.Empty;
+							args.Result[loop] = SearchThreadsArgs.ThreadResult.Empty;
 							continue;
 						}
 						searchInstance = plugin.CreateEntityInstance(filePath);
 
 						if(searchInstance == null)
-							args.Result[loop] = ThreadResult.None;
+							args.Result[loop] = SearchThreadsArgs.ThreadResult.None;
 						else if(engine.StartSearch(searchInstance))
-							args.Result[loop] = ThreadResult.Found;
+							args.Result[loop] = SearchThreadsArgs.ThreadResult.Found;
 						else
-							args.Result[loop] = ThreadResult.None;
+							args.Result[loop] = SearchThreadsArgs.ThreadResult.None;
 
 						if(loop % 10 == 0)//TODO: Last item will not count...
 							pnl.bgSearch.ReportProgress(10);
 					} catch(Exception exc)
 					{
-						args.Result[loop] = ThreadResult.Exception;
+						args.Result[loop] = SearchThreadsArgs.ThreadResult.Exception;
 						args.Messages[loop] = exc.Message;
 						exc.Data.Add("File", filePath);
 						args.Panel.Plugin.Trace.TraceData(TraceEventType.Error, 10, exc);
@@ -341,16 +319,17 @@ namespace Plugin.ReflectionSearch
 
 		private void bgSearch_DoWork(Object sender, System.ComponentModel.DoWorkEventArgs e)
 		{
+			SearchItemsArgs searchArgs = (SearchItemsArgs)e.Argument;
 			List<ListViewItem> itemsToAdd = new List<ListViewItem>();
 			try
 			{
-				String[] filePath = (String[])e.Argument;
+				String[] filePath = (String[])searchArgs.ItemsForSearch;
 
 				bgSearch.ReportProgress(0, filePath.Length);
 
 				Int32 numberInThread = (filePath.Length / this.ThreadsCount) + 1;
 				ManualResetEvent[] doneEventEx = new ManualResetEvent[this.ThreadsCount];//Семафоры завершения события
-				ThreadArrayArgs[] args = new ThreadArrayArgs[this.ThreadsCount];//Аргументы для потоков
+				SearchThreadsArgs[] threadArgs = new SearchThreadsArgs[this.ThreadsCount];//Аргументы для потоков
 				Int32 threadIndex = 0;
 				Int32 arrayIndex = 0;
 				while(arrayIndex < filePath.Length)
@@ -363,8 +342,8 @@ namespace Plugin.ReflectionSearch
 						doneEventEx[threadIndex] = new ManualResetEvent(false);
 						String[] filesInThread = new String[numberInThread];
 						Array.Copy(filePath, arrayIndex, filesInThread, 0, filesInThread.Length);
-						args[threadIndex] = new ThreadArrayArgs(filesInThread, this, this.ReflectionSearch, doneEventEx[threadIndex]);
-						ThreadPool.QueueUserWorkItem(new WaitCallback(SearchAssemblyThreads), args[threadIndex]);
+						threadArgs[threadIndex] = new SearchThreadsArgs(filesInThread, this, searchArgs.Filters, doneEventEx[threadIndex]);
+						ThreadPool.QueueUserWorkItem(new WaitCallback(SearchAssemblyThreads), threadArgs[threadIndex]);
 						threadIndex++;
 						arrayIndex += numberInThread;
 					}
@@ -374,9 +353,9 @@ namespace Plugin.ReflectionSearch
 					if(doneEventEx[eventLoop] != null//Накопилось только на один поток
 						&& doneEventEx[eventLoop].WaitOne())
 					{
-						ThreadArrayArgs a = args[eventLoop];
-						for(Int32 itemLoop = 0;itemLoop < a.Files.Length;itemLoop++)
-							if(a.Result[itemLoop] != ThreadResult.None)
+						SearchThreadsArgs a = threadArgs[eventLoop];
+						for(Int32 itemLoop = 0;itemLoop < a.ItemsForSearch.Length;itemLoop++)
+							if(a.Result[itemLoop] != SearchThreadsArgs.ThreadResult.None)
 								itemsToAdd.Add(this.CreateListItem(a, itemLoop));
 					} else
 						return;
@@ -401,7 +380,7 @@ namespace Plugin.ReflectionSearch
 			lvPlugins.Enabled = true;
 			tsbnSearchFilters.Enabled = true;
 			tsbnSearch.Checked = false;
-			tsslStatus.Text = "Ready";
+			this.SetStatusText(true);
 		}
 
 		private void bgSearch_ProgressChanged(Object sender, System.ComponentModel.ProgressChangedEventArgs e)
@@ -412,7 +391,7 @@ namespace Plugin.ReflectionSearch
 
 				this._itemsFetched = 0;
 				this._itemsMax = (UInt64)Convert.ToInt64(e.UserState);
-				tsslStatus.Text = $"Searching... {this._itemsMax:n0}/";
+				this.SetStatusText(false, $"{this._itemsMax:n0}/");
 
 			} else if(e.ProgressPercentage == 100)
 			{
@@ -426,6 +405,19 @@ namespace Plugin.ReflectionSearch
 			}
 		}
 
+		private void SetStatusText(Boolean isIdle, String extra = null)
+		{
+			if(isIdle)
+			{
+				Int32 selectedItemsCount = lvResult.SelectedItems.Count;
+				if(selectedItemsCount <= 1)
+					tsslStatus.Text = "Ready";
+				else
+					tsslStatus.Text = $"{selectedItemsCount:n0} item(s) selected";
+			} else
+				tsslStatus.Text = "Searching... " + extra;
+		}
+
 		private void lvResult_DragEnter(Object sender, DragEventArgs e)
 			=> e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Move : DragDropEffects.None;
 
@@ -433,11 +425,15 @@ namespace Plugin.ReflectionSearch
 		{
 			if(bgSearch.IsBusy)
 				while(bgSearch.IsBusy)
-					System.Threading.Thread.Sleep(100);
+					Thread.Sleep(100);
 
 			this.ThreadsCount = lvResult.GetVisibleRowsCount();//Кол-во одновременных потоков
-			bgSearch.RunWorkerAsync((String[])e.Data.GetData(DataFormats.FileDrop));
+			SearchItemsArgs args = new SearchItemsArgs((String[])e.Data.GetData(DataFormats.FileDrop), this.ReflectionSearch);
+			bgSearch.RunWorkerAsync(args);
 		}
+
+		private void lvResult_SelectedIndexChanged(Object sender, EventArgs e)
+			=> this.SetStatusText(true);
 
 		private void cmsResult_Opening(Object sender, System.ComponentModel.CancelEventArgs e)
 			=> e.Cancel = lvResult.SelectedItems.Count == 0;

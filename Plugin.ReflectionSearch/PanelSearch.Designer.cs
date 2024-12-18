@@ -243,6 +243,7 @@
 			this.lvResult.TabIndex = 1;
 			this.lvResult.UseCompatibleStateImageBehavior = false;
 			this.lvResult.View = System.Windows.Forms.View.Details;
+			this.lvResult.SelectedIndexChanged += new System.EventHandler(this.lvResult_SelectedIndexChanged);
 			this.lvResult.DragDrop += new System.Windows.Forms.DragEventHandler(this.lvResult_DragDrop);
 			this.lvResult.DragEnter += new System.Windows.Forms.DragEventHandler(this.lvResult_DragEnter);
 			this.lvResult.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lvResult_KeyDown);

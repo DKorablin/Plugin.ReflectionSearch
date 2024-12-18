@@ -125,6 +125,7 @@
     <Compile Include="Controls\ReflectionTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\SearchItemsArgs.cs" />
     <Compile Include="PanelSearch.cs">
       <SubType>UserControl</SubType>
     </Compile>

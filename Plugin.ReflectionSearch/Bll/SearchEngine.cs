@@ -131,11 +131,14 @@ namespace Plugin.ReflectionSearch.Bll
 						{
 							if(o is String strO && strO.Contains(fStr))
 								return true;
-							else if(o.GetType().GetToStringMethod() != null)
+							else
 							{
 								MethodInfo toString = o.GetType().GetToStringMethod();
-								Object valToStr = toString.Invoke(o, new Object[] { });
-								result = String.Equals(filter.Value, valToStr);
+								if(toString != null)
+								{
+									String valToStr = (String)toString.Invoke(o, new Object[] { });
+									return valToStr?.Length >= fStr.Length && valToStr.ToLowerInvariant().Contains(fStr.ToLowerInvariant());
+								}
 							}
 						}
 						throw new NotImplementedException(filter.Value.ToString());
