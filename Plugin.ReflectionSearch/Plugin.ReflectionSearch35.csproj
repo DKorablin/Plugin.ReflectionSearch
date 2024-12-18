@@ -46,6 +46,7 @@
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\WinForms.Shared\ContextMenuStripCopy.cs">
@@ -65,6 +66,7 @@
     <Compile Include="Bll\SearchPluginWrapper.cs" />
     <Compile Include="Bll\Sign.cs" />
     <Compile Include="Bll\TypeExtender.cs" />
+    <Compile Include="Bll\XmlReflectionReader.cs" />
     <Compile Include="Constant.cs" />
     <Compile Include="Controls\AdvancedSearchDlg.cs">
       <SubType>Form</SubType>
