@@ -41,15 +41,15 @@
 			this.bgSearch = new System.ComponentModel.BackgroundWorker();
 			this.splitMain = new System.Windows.Forms.SplitContainer();
 			this.lvPlugins = new System.Windows.Forms.ListView();
+			this.lvResult = new AlphaOmega.Windows.Forms.DbListView();
+			this.colName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.colReflectedType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.colString = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.cmsResult = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsmiResultOpenFileLocation = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsmiResultCopy = new System.Windows.Forms.ToolStripMenuItem();
 			this.tsmiResultDelete = new System.Windows.Forms.ToolStripMenuItem();
 			this.tableFilters = new System.Windows.Forms.TableLayoutPanel();
-			this.lvResult = new AlphaOmega.Windows.Forms.DbListView();
-			this.colName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.colReflectedType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.colString = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			ssMain = new System.Windows.Forms.StatusStrip();
 			colPlugin = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			ResultSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -71,6 +71,7 @@
 			ssMain.Name = "ssMain";
 			ssMain.Padding = new System.Windows.Forms.Padding(1, 0, 19, 0);
 			ssMain.Size = new System.Drawing.Size(444, 26);
+			ssMain.SizingGrip = false;
 			ssMain.TabIndex = 2;
 			// 
 			// tsslStatus
@@ -184,6 +185,44 @@
 			this.lvPlugins.View = System.Windows.Forms.View.Details;
 			this.lvPlugins.SelectedIndexChanged += new System.EventHandler(this.lvPlugins_SelectedIndexChanged);
 			// 
+			// lvResult
+			// 
+			this.lvResult.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.colName,
+            this.colReflectedType,
+            this.colString});
+			this.lvResult.ContextMenuStrip = this.cmsResult;
+			this.lvResult.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lvResult.FullRowSelect = true;
+			this.lvResult.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+			this.lvResult.HideSelection = false;
+			this.lvResult.Location = new System.Drawing.Point(0, 27);
+			this.lvResult.Margin = new System.Windows.Forms.Padding(4);
+			this.lvResult.Name = "lvResult";
+			this.lvResult.Size = new System.Drawing.Size(269, 367);
+			this.lvResult.TabIndex = 1;
+			this.lvResult.UseCompatibleStateImageBehavior = false;
+			this.lvResult.View = System.Windows.Forms.View.Details;
+			this.lvResult.SelectedIndexChanged += new System.EventHandler(this.lvResult_SelectedIndexChanged);
+			this.lvResult.DragDrop += new System.Windows.Forms.DragEventHandler(this.lvResult_DragDrop);
+			this.lvResult.DragEnter += new System.Windows.Forms.DragEventHandler(this.lvResult_DragEnter);
+			this.lvResult.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lvResult_KeyDown);
+			// 
+			// colName
+			// 
+			this.colName.Text = "Module";
+			this.colName.Width = 86;
+			// 
+			// colReflectedType
+			// 
+			this.colReflectedType.DisplayIndex = 2;
+			this.colReflectedType.Text = "Type";
+			// 
+			// colString
+			// 
+			this.colString.DisplayIndex = 1;
+			this.colString.Text = "String";
+			// 
 			// cmsResult
 			// 
 			this.cmsResult.ImageScalingSize = new System.Drawing.Size(20, 20);
@@ -224,44 +263,6 @@
 			this.tableFilters.Name = "tableFilters";
 			this.tableFilters.Size = new System.Drawing.Size(269, 0);
 			this.tableFilters.TabIndex = 2;
-			// 
-			// lvResult
-			// 
-			this.lvResult.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.colName,
-            this.colReflectedType,
-            this.colString});
-			this.lvResult.ContextMenuStrip = this.cmsResult;
-			this.lvResult.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.lvResult.FullRowSelect = true;
-			this.lvResult.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-			this.lvResult.HideSelection = false;
-			this.lvResult.Location = new System.Drawing.Point(0, 27);
-			this.lvResult.Margin = new System.Windows.Forms.Padding(4);
-			this.lvResult.Name = "lvResult";
-			this.lvResult.Size = new System.Drawing.Size(269, 367);
-			this.lvResult.TabIndex = 1;
-			this.lvResult.UseCompatibleStateImageBehavior = false;
-			this.lvResult.View = System.Windows.Forms.View.Details;
-			this.lvResult.SelectedIndexChanged += new System.EventHandler(this.lvResult_SelectedIndexChanged);
-			this.lvResult.DragDrop += new System.Windows.Forms.DragEventHandler(this.lvResult_DragDrop);
-			this.lvResult.DragEnter += new System.Windows.Forms.DragEventHandler(this.lvResult_DragEnter);
-			this.lvResult.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lvResult_KeyDown);
-			// 
-			// colName
-			// 
-			this.colName.Text = "Module";
-			this.colName.Width = 86;
-			// 
-			// colReflectedType
-			// 
-			this.colReflectedType.DisplayIndex = 2;
-			this.colReflectedType.Text = "Type";
-			// 
-			// colString
-			// 
-			this.colString.DisplayIndex = 1;
-			this.colString.Text = "String";
 			// 
 			// PanelSearch
 			// 

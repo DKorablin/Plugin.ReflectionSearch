@@ -148,25 +148,31 @@ namespace Plugin.ReflectionSearch
 						tsbnSearchFilters.DropDownItems.Remove(tsmiFilterEmpty);
 
 					foreach(var filter in filters)
-						if(!tableFilters.Controls.OfType<MessageCtrl>().Any(c => String.Equals(filter.Key, c.Tag)))
-						{
-							MessageCtrl newCtrl = new MessageCtrl()
-							{
-								Tag = filter.Key,
-							};
-							newCtrl.OnClosed += MessageCtrl_OnClosed;
-							newCtrl.ShowMessage(MessageCtrl.StatusMessageType.None, filter.Key + ": " + filter.Value.AsString());
-							tableFilters.Controls.Add(newCtrl);
+					{
+						MessageCtrl ctrl = tableFilters.Controls.OfType<MessageCtrl>().FirstOrDefault(c => String.Equals(filter.Key, c.Tag));
+						ToolStripMenuItem menuItem = tsbnSearchFilters.DropDownItems.OfType<ToolStripMenuItem>().FirstOrDefault(c => String.Equals(filter.Key, c.Tag));
 
-							ToolStripMenuItem menuItem = new ToolStripMenuItem()
+						if(ctrl == null)
+						{
+							ctrl = new MessageCtrl()
 							{
-								Text = String.Join(" ", new String[] { filter.Key, filter.Value.AsString(), }),
 								Tag = filter.Key,
 							};
-							if(filter.Value.Value == null)
-								menuItem.SetNull();
+							ctrl.OnClosed += MessageCtrl_OnClosed;
+							tableFilters.Controls.Add(ctrl);
+
+							menuItem = new ToolStripMenuItem()
+							{
+								Tag = filter.Key,
+							};
 							tsbnSearchFilters.DropDownItems.Add(menuItem);
 						}
+
+						ctrl.ShowMessage(MessageCtrl.StatusMessageType.None, filter.Key + ": " + filter.Value.AsString());
+						menuItem.Text = String.Join(" ", new String[] { filter.Key, filter.Value.AsString(), });
+						if(filter.Value.Value == null)
+							menuItem.SetNull();
+					}
 
 					for(Int32 loop = tableFilters.Controls.Count - 1; loop >= 0; loop--)
 						if(!filters.ContainsKey((String)tableFilters.Controls[loop].Tag))
