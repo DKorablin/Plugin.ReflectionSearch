@@ -22,11 +22,11 @@ namespace Plugin.ReflectionSearch.Controls.Filters
 			}
 		}
 
-		public Sign? Sign { get => null; set { } }
+		public Sign? Sign { get => null; set { _ = value; } }
 
 		public EnumCtrl(Type type)
 		{
-			InitializeComponent();
+			this.InitializeComponent();
 			ddlValue.Items.Clear();
 			foreach(Object item in Enum.GetValues(type))
 				ddlValue.Items.Add(item);

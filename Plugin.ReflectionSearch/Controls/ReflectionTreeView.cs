@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
@@ -27,7 +28,7 @@ namespace Plugin.ReflectionSearch.Controls
 					{
 						MethodInfo method = (MethodInfo)member;
 						ParameterInfo[] prms = method.GetParameters();
-						if(prms.Length == 1)//TODO: Получение значения по енумам
+						if(prms.Length == 1)//TODO: Getting the value of enums
 							e.Node.Nodes.Add(this.CreateNode(method.GetMemberType(), method.Name + "(" + prms[0].Name + ")"));
 						else
 							e.Node.Nodes.Add(this.CreateNode(method.GetMemberType(), method.Name + "()"));
@@ -37,25 +38,22 @@ namespace Plugin.ReflectionSearch.Controls
 			}
 		}
 		public String GetPath()
-			=> this.GetPath(base.SelectedNode);
+			=> GetPath(this.SelectedNode);
 
 		public String GetPath(TreeNode node)
 		{
-			String result = null;
+			List<String> result = new List<String>();
 			while(node.Parent != null)
 			{
-				if(result == null)
-					result = node.Text;
-				else
-					result = node.Text + "." + result;
+				result.Add(node.Text);
 				node = node.Parent;
 			}
-			return result;
+			return String.Join(".", result.ToArray());
 		}
 
-		/// <summary>Выбрать узел по пути</summary>
-		/// <param name="path">Путь по которому выбрать узел</param>
-		/// <returns>Найденный узел дерева</returns>
+		/// <summary>Select a node by path</summary>
+		/// <param name="path">Path by which to select a node</param>
+		/// <returns>The found tree node</returns>
 		public TreeNode SelectPath(String path)
 		{
 			String[] nodes = path.Split(new Char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);

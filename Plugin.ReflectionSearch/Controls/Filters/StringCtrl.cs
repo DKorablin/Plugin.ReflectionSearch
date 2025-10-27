@@ -38,6 +38,6 @@ namespace Plugin.ReflectionSearch.Controls.Filters
 		}
 
 		public StringCtrl()
-			=> InitializeComponent();
+			=> this.InitializeComponent();
 	}
 }

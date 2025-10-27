@@ -1,6 +1,6 @@
 ﻿namespace Plugin.ReflectionSearch.Search
 {
-	/// <summary>Тип элемента для отображения</summary>
+	/// <summary>Type of element to display</summary>
 	internal enum ControlType
 	{
 		None,

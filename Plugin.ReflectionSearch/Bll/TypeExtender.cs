@@ -18,7 +18,7 @@ namespace Plugin.ReflectionSearch.Bll
 		private static Boolean IsMemberSearchable(this Type type, MemberInfo member)
 		{
 			if(member.DeclaringType != type && member.DeclaringType != type.BaseType)
-				return false;//member.DeclaringType == type.BaseType Используется для отображения наследованных классов (Пример: StringHeap:StreamHeaderTyped<String>.Data). Но возможно появление бесконечных рекурсий
+				return false;//member.DeclaringType == type.BaseType Used to display inherited classes (Example: StringHeap:StreamHeaderTyped<String>.Data). But infinite recursions may occur
 
 			switch(member.MemberType)
 			{
@@ -45,7 +45,7 @@ namespace Plugin.ReflectionSearch.Bll
 				&& !method.Name.StartsWith("get_")
 				&& !method.Name.StartsWith("set_");
 			if(result)
-			{//TODO: Получение значения по енумам
+			{//TODO: Getting the value of enums
 				ParameterInfo[] prms = method.GetParameters();
 				if(prms.Length == 1)
 					if(!prms[0].ParameterType.IsEnum)
@@ -97,7 +97,7 @@ namespace Plugin.ReflectionSearch.Bll
 					return type.GetGenericArguments()[0].GetRealType();
 			}
 			if(type.HasElementType)
-				//if(type.BaseType == typeof(Array))//+Для out и ref параметров
+				//if(type.BaseType == typeof(Array))//+For out and ref parameters
 				return type.GetElementType().GetRealType();
 			return type;
 		}

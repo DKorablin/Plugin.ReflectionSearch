@@ -6,61 +6,63 @@ namespace Plugin.ReflectionSearch.Bll
 {
 	internal static class NodeExtender
 	{
-		internal static Color NullColor = Color.Gray;
-		internal static Color ExceptionColor = Color.Red;
-		internal static Font _nullFont;
-		private static Font NullFont
+		internal static readonly Color NullColor = Color.Gray;
+		internal static readonly Color ExceptionColor = Color.Red;
+		private static Font _nullFont;
+		internal static Font NullFont
 			=> NodeExtender._nullFont ?? (NodeExtender._nullFont = new Font(Control.DefaultFont, FontStyle.Italic));
 
-		/// <summary>Записать в элемент списка исключение</summary>
-		/// <param name="item">Элемент списка</param>
+		/// <summary>Write exception to the list item</summary>
+		/// <param name="item">List item</param>
 		public static void SetException(this ListViewItem item)
 			=> item.ForeColor = NodeExtender.ExceptionColor;
 
-		/// <summary>В элементе списка записано значение null</summary>
-		/// <param name="item">Элемент списка</param>
-		/// <returns>В элементе списка записано исключение</returns>
-		public static Boolean IsException(this ListViewItem item)
-			=> item.ForeColor == NodeExtender.ExceptionColor;
-
-		/// <summary>Mark current element as empty or nothing could be done with element</summary>
-		/// <param name="item">The item to set null color</param>
-		public static void SetNull(this ListViewItem item)
-			=> item.ForeColor = NodeExtender.NullColor;
-
-		/// <summary>Написать в узел исключение</summary>
-		/// <param name="node">Узел</param>
-		/// <param name="exc">Исключение</param>
+		/// <summary>Write exception to the node</summary>
+		/// <param name="node">Node</param>
+		/// <param name="exc">Exception</param>
 		public static void SetException(this TreeNode node, Exception exc)
 			=> node.SetException(exc.Message);
 
-		/// <summary>Написать в узел сообщение о исключении</summary>
-		/// <param name="node">Узел</param>
-		/// <param name="exceptionMessage">Сообщение описывающее исключительную ситуацию</param>
+		/// <summary>Write exception message to the node</summary>
+		/// <param name="node">Node</param>
+		/// <param name="exceptionMessage">Message describing the exception</param>
 		public static void SetException(this TreeNode node, String exceptionMessage)
 		{
 			node.ForeColor = NodeExtender.ExceptionColor;
 			node.Text = exceptionMessage;
 		}
 
-		/// <summary>Узел находится в статусе иксключения</summary>
-		/// <param name="node">Узел</param>
-		/// <returns>В узел записана исключительная ситуация</returns>
+		/// <summary>Checks if the list item contains an exception value</summary>
+		/// <param name="item">List item</param>
+		/// <returns>True if the list item contains an exception</returns>
+		public static Boolean IsException(this ListViewItem item)
+			=> item.ForeColor == NodeExtender.ExceptionColor;
+
+		/// <summary>Checks if the node is in exception state</summary>
+		/// <param name="node">Node</param>
+		/// <returns>True if the node contains an exception</returns>
 		public static Boolean IsException(this TreeNode node)
 			=> node.ForeColor == NodeExtender.ExceptionColor;
 
-		/// <summary>Корневой узел закрыт и необходимо подгрузить его содержимое</summary>
-		/// <param name="node">Узел</param>
-		/// <returns>Узел закыт и необходимо подгрузить детей</returns>
+		/// <summary>Checks if root node is closed and needs to load its content</summary>
+		/// <param name="node">Node</param>
+		/// <returns>True if node is closed and children need to be loaded</returns>
 		public static Boolean IsClosedRootNode(this TreeNode node)
 			=> node.Parent == null && node.IsClosedEmptyNode();
 
-		/// <summary>Узел закрыт и необходимо подгрузить его содержимое</summary>
-		/// <param name="node">Узел</param>
-		/// <returns>Узел закыт и необходимо подгрузить детей</returns>
+		/// <summary>Checks if node is closed and needs to load its content</summary>
+		/// <param name="node">Node</param>
+		/// <returns>True if node is closed and children need to be loaded</returns>
 		public static Boolean IsClosedEmptyNode(this TreeNode node)
 			=> node.Nodes.Count == 1 && (node.Nodes[0].Text.Length == 0 || node.Nodes[0].IsException());
 
+		/// <summary>Mark current element as empty or nothing could be done with element</summary>
+		/// <param name="item">The item to set null color</param>
+		public static void SetNull(this ListViewItem item)
+			=> item.ForeColor = NodeExtender.NullColor;
+
+		/// <summary>Mark current element as empty or nothing could be done with element</summary>
+		/// <param name="item">The item to set null color</param>
 		public static void SetNull(this ToolStripItem item)
 		{
 			item.Font = NodeExtender.NullFont;

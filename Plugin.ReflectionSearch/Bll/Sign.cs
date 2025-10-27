@@ -2,7 +2,7 @@
 
 namespace Plugin.ReflectionSearch.Bll
 {
-	/// <summary>Знаки сранения</summary>
+	/// <summary>Comparison signs</summary>
 	internal enum Sign
 	{
 		/// <summary>==</summary>

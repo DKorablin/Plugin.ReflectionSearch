@@ -7,7 +7,6 @@ namespace Plugin.ReflectionSearch.Bll
 {
 	internal class SearchEngine
 	{
-		private Object _target;
 		private readonly Dictionary<String, SearchFilter> _filters;
 
 		public SearchEngine(String path, SearchFilter filter)
@@ -35,8 +34,7 @@ namespace Plugin.ReflectionSearch.Bll
 		{
 			_ = target ?? throw new ArgumentNullException(nameof(target));
 
-			this._target = target;
-			return this.SearchRecursive(String.Empty, this._target.GetType(), this._target);
+			return this.SearchRecursive(String.Empty, target.GetType(), target);
 		}
 
 		private Boolean SearchRecursive(String path, Type type, Object obj)
@@ -53,11 +51,11 @@ namespace Plugin.ReflectionSearch.Bll
 					{
 						MethodInfo method = (MethodInfo)member;
 						ParameterInfo[] prms = method.GetParameters();
-						childPath = prms.Length == 1//TODO: Получение значения по енумам
-							? this.GetFullKey(path, method.GetMemberType(), method.Name + "(" + prms[0].Name + ")")
-							: this.GetFullKey(path, method.GetMemberType(), method.Name + "()");
+						childPath = prms.Length == 1//TODO: Getting the value of enums
+							? GetFullKey(path, method.GetMemberType(), method.Name + "(" + prms[0].Name + ")")
+							: GetFullKey(path, method.GetMemberType(), method.Name + "()");
 					} else
-						childPath = this.GetFullKey(path, member.GetMemberType(), member.Name);
+						childPath = GetFullKey(path, member.GetMemberType(), member.Name);
 
 					if(this.SearchObject(childPath, obj, member))//Searching
 						return true;
@@ -71,7 +69,7 @@ namespace Plugin.ReflectionSearch.Bll
 			} finally
 			{
 				if(!String.IsNullOrEmpty(path))
-				{//Корень диспозить не надо
+				{//There is no need to dispose the root
 					IDisposable idisp = obj as IDisposable;
 					idisp?.Dispose();
 				}
@@ -190,8 +188,8 @@ namespace Plugin.ReflectionSearch.Bll
 					paramValue = new Object[] { arg };
 
 				Object result = type.InvokeMember(member.Name, getFlag, null, target, paramValue);
-				if(result != null && result.GetType()!=typeof(String))
-				{//Чтобы итерация не пошла по символам
+				if(result != null && !(result is String))
+				{//To prevent iteration from going over symbols
 					if(result is IEnumerable enumerable)//SortedList!=Array
 						foreach(Object resultArr in enumerable)
 							yield return resultArr;
@@ -207,7 +205,7 @@ namespace Plugin.ReflectionSearch.Bll
 			}
 		}
 
-		private String GetFullKey(String path,Type type, String name)
+		private static String GetFullKey(String path,Type type, String name)
 			=> String.IsNullOrEmpty(path)
 				? type.GetMemberName(name)
 				: path + "." + type.GetMemberName(name);

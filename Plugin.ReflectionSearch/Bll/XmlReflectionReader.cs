@@ -11,7 +11,7 @@ namespace Plugin.ReflectionSearch.Bll
 		private static XmlReflectionReader _instance;
 		private readonly Dictionary<Assembly, XmlDocument> _documents = new Dictionary<Assembly, XmlDocument>();
 		private readonly Dictionary<String, String> _documentationCache = new Dictionary<String, String>();
-		private Object _lock = new Object();
+		private readonly Object _lock = new Object();
 
 		public static XmlReflectionReader Instance
 		{

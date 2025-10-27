@@ -21,9 +21,9 @@ namespace Plugin.ReflectionSearch.Controls.Filters
 				}
 			}
 		}
-		public Sign? Sign { get => null; set { } }
+		public Sign? Sign { get => null; set { _ = value; } }
 
 		public BooleanCtrl()
-			=> InitializeComponent();
+			=> this.InitializeComponent();
 	}
 }

@@ -33,11 +33,11 @@ namespace Plugin.ReflectionSearch
 		{
 			get
 			{
-				ListViewItem selecteditem = lvPlugins.SelectedItems.Count == 0 ? null : lvPlugins.SelectedItems[0];
-				if(selecteditem == null)
+				ListViewItem selectedItem = lvPlugins.SelectedItems.Count == 0 ? null : lvPlugins.SelectedItems[0];
+				if(selectedItem == null)
 					return new Dictionary<String, SearchFilter>();
 
-				return this._pluginsFilters.TryGetValue(selecteditem.Text, out Dictionary<String, SearchFilter> result)
+				return this._pluginsFilters.TryGetValue(selectedItem.Text, out Dictionary<String, SearchFilter> result)
 					? result
 					: new Dictionary<String, SearchFilter>();
 			}
@@ -214,7 +214,7 @@ namespace Plugin.ReflectionSearch
 
 			try
 			{
-				this.ThreadsCount = lvResult.GetVisibleRowsCount();//Кол-во одновременных потоков
+				this.ThreadsCount = lvResult.GetVisibleRowsCount();//Number of simultaneous streams
 				this.ThreadsTerminate = false;
 
 				SearchPluginWrapper plugin = this.GetSelectedPlugin();
@@ -280,7 +280,7 @@ namespace Plugin.ReflectionSearch
 				SearchPluginWrapper plugin = args.Panel.GetSelectedPlugin();
 				for(Int32 loop = 0; loop < args.ItemsForSearch.Length; loop++)
 				{
-					if(pnl.ThreadsTerminate == true)
+					if(pnl.ThreadsTerminate)
 						break;
 
 					Object searchInstance = null;
@@ -334,8 +334,8 @@ namespace Plugin.ReflectionSearch
 				bgSearch.ReportProgress(0, filePath.Length);
 
 				Int32 numberInThread = (filePath.Length / this.ThreadsCount) + 1;
-				ManualResetEvent[] doneEventEx = new ManualResetEvent[this.ThreadsCount];//Семафоры завершения события
-				SearchThreadsArgs[] threadArgs = new SearchThreadsArgs[this.ThreadsCount];//Аргументы для потоков
+				ManualResetEvent[] doneEventEx = new ManualResetEvent[this.ThreadsCount];//Event Completion Semaphores
+				SearchThreadsArgs[] threadArgs = new SearchThreadsArgs[this.ThreadsCount];//Arguments for streams
 				Int32 threadIndex = 0;
 				Int32 arrayIndex = 0;
 				while(arrayIndex < filePath.Length)
@@ -354,9 +354,9 @@ namespace Plugin.ReflectionSearch
 						arrayIndex += numberInThread;
 					}
 				}
-				//Ожидание завершения пула потоков
+				//Waiting for thread pool to complete
 				for(Int32 eventLoop = 0;eventLoop < doneEventEx.Length;eventLoop++)
-					if(doneEventEx[eventLoop] != null//Накопилось только на один поток
+					if(doneEventEx[eventLoop] != null//There's only enough for one thread.
 						&& doneEventEx[eventLoop].WaitOne())
 					{
 						SearchThreadsArgs a = threadArgs[eventLoop];
@@ -433,7 +433,7 @@ namespace Plugin.ReflectionSearch
 				while(bgSearch.IsBusy)
 					Thread.Sleep(100);
 
-			this.ThreadsCount = lvResult.GetVisibleRowsCount();//Кол-во одновременных потоков
+			this.ThreadsCount = lvResult.GetVisibleRowsCount();//Number of simultaneous streams
 			SearchItemsArgs args = new SearchItemsArgs((String[])e.Data.GetData(DataFormats.FileDrop), this.ReflectionSearch);
 			bgSearch.RunWorkerAsync(args);
 		}
@@ -455,7 +455,7 @@ namespace Plugin.ReflectionSearch
 				Clipboard.SetText(String.Join(Environment.NewLine, files.ToArray()));
 			} else if(e.ClickedItem == tsmiResultDelete)
 			{
-				if(MessageBox.Show("Are you shure you want to remove selected items from file system?", this.Window.Caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+				if(MessageBox.Show("Are you sure you want to remove selected items from file system?", this.Window.Caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
 					while(lvResult.SelectedItems.Count > 0)
 					{
 						ListViewItem item = lvResult.SelectedItems[0];

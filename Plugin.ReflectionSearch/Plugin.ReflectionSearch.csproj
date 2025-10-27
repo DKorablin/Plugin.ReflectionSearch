@@ -1,0 +1,59 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>net35;net8.0-windows</TargetFrameworks>
+		<UseWindowsForms>true</UseWindowsForms>
+		<OutputType>Library</OutputType>
+		<RootNamespace>Plugin.ReflectionSearch</RootNamespace>
+		<Deterministic>false</Deterministic>
+		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+		<GenerateDocumentationFile>False</GenerateDocumentationFile>
+		<NoWarn>CA1416</NoWarn>
+	</PropertyGroup>
+
+	<!--nuspec-->
+	<PropertyGroup>
+		<PackageId>AlphaOmega.SAL.Plugin.ReflectionSearch</PackageId>
+		<Version>$(Version)</Version>
+		<Title>Plugin to search in objects using reflection</Title>
+		<Description>This plugin using other supported plugins to use them to search on file system using reflection.</Description>
+		<Authors>Danila Korablin</Authors>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageReadmeFile>docs\README.md</PackageReadmeFile>
+		<PackageIcon>docs\SAL.100.png</PackageIcon>
+		<RepositoryUrl>https://github.com/DKorablin/Plugin.ReflectionSearch</RepositoryUrl>
+		<PackageTags>SAL;plugin;windows;search;fileSystem</PackageTags>
+	</PropertyGroup>
+	<ItemGroup>
+	  <Compile Include="..\WinForms.Shared\ContextMenuStripCopy.cs" Link="Controls\ContextMenuStripCopy.cs" />
+	  <Compile Include="..\WinForms.Shared\DbListView.cs" Link="Controls\DbListView.cs" />
+	  <Compile Include="..\WinForms.Shared\SystemImageList.cs" Link="Controls\SystemImageList.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\README.md" Pack="true" PackagePath="\docs" />
+		<None Include="..\Images.Shared\SAL.100.png" Pack="true" PackagePath="\docs" />
+	</ItemGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<Optimize>true</Optimize>
+		<PublishSingleFile>true</PublishSingleFile>
+		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' != 'net35'">
+		<AssemblyAttributes Include="AssemblyMetadata">
+			<_Parameter1>ProjectUrl</_Parameter1>
+			<_Parameter2>https://github.com/DKorablin/Plugin.ReflectionSearch</_Parameter2>
+		</AssemblyAttributes>
+		<AssemblyAttributes Include="System.Runtime.Versioning.SupportedOSPlatform">
+			<_Parameter1>Windows</_Parameter1>
+		</AssemblyAttributes>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="SAL.Windows">
+			<ExcludeAssets>runtime</ExcludeAssets>
+		</PackageReference>
+	</ItemGroup>
+</Project>

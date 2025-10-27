@@ -25,14 +25,9 @@ namespace Plugin.ReflectionSearch.Controls.Filters
 		public Sign? Sign
 		{
 			get => (Sign)ddlSign.SelectedIndex;
-			set
-			{
-				if(value.HasValue)
-					ddlSign.SelectedIndex = (Int32)value.Value;
-				else ddlSign.SelectedIndex = 0;
-			}
+			set => ddlSign.SelectedIndex = value.HasValue ? (Int32)value.Value : 0;
 		}
 		public DateCtrl()
-			=> InitializeComponent();
+			=> this.InitializeComponent();
 	}
 }

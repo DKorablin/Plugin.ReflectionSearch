@@ -10,13 +10,13 @@ namespace Plugin.ReflectionSearch.Controls
 
 		public enum StatusMessageType
 		{
-			None=0,
+			None = 0,
 			Success = 1,
 			Progress = 2,
 			Failed = 3,
 		}
 
-		private static Color[] StatusMessageColor = new Color[] { Color.Empty, Color.LightCyan, Color.AntiqueWhite, Color.Pink, };
+		private static readonly Color[] StatusMessageColor = new Color[] { Color.Empty, Color.LightCyan, Color.AntiqueWhite, Color.Pink, };
 
 		public MessageCtrl()
 		{

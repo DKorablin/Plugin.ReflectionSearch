@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows.Forms;
 using Plugin.ReflectionSearch.Bll;
 
 namespace Plugin.ReflectionSearch.Controls.Filters

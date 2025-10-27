@@ -42,7 +42,7 @@ namespace Plugin.ReflectionSearch
 		/// <param name="path">FullName of object in the target</param>
 		/// <param name="sign">Valid values: Equals, NotEquals, More, MoreOrEquals, Less, LessOrEquals, Contains</param>
 		/// <param name="value">Value to find</param>
-		/// <returns>Search succedded</returns>
+		/// <returns>Search succeeded</returns>
 		public Boolean Search(Object target, String path, String sign, Object value)
 		{
 			_ = target ?? throw new ArgumentNullException(nameof(target));

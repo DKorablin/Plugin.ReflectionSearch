@@ -3,9 +3,9 @@ using Plugin.ReflectionSearch.Properties;
 
 namespace Plugin.ReflectionSearch.Bll
 {
-	// Можно попробовать вывести весь PEInfo в виде дерева в
-	// TreeView+Form чтобы для каждого элемента можно было указать условия поиска.
-	// При поиске получить то-же самое дерево, но с применением поиска к каждому элементу объекта.
+	// We can try displaying the entire PEInfo as a tree in
+	// TreeView+Form so that you can specify search conditions for each element.
+	// When searching, get the same tree, but apply the search to each element of the object.
 	internal struct SearchFilter
 	{
 		public Object Value { get; set; }

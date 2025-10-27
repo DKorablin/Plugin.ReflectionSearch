@@ -24,9 +24,9 @@ namespace Plugin.ReflectionSearch.Controls
 		{
 			/// <summary>Nothing found</summary>
 			None,
-			/// <summary>Somethid is found inside object</summary>
+			/// <summary>Something is found inside object</summary>
 			Found,
-			/// <summary>Exception occured while searching inside object</summary>
+			/// <summary>Exception occurred while searching inside object</summary>
 			Exception,
 			/// <summary>Unknown or empty object</summary>
 			Empty,

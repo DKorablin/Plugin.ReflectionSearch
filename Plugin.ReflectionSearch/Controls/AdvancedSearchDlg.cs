@@ -5,6 +5,6 @@ namespace Plugin.ReflectionSearch.Controls
 	internal partial class AdvancedSearchDlg : Form
 	{
 		public AdvancedSearchDlg()
-			=> InitializeComponent();
+			=> this.InitializeComponent();
 	}
 }

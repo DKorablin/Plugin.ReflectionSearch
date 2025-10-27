@@ -38,9 +38,9 @@ namespace Plugin.ReflectionSearch.Controls
 		public virtual Boolean? ShowDialog(IntPtr owner, Boolean throwOnError = false)
 		{
 			var dialog = (IFileOpenDialog)new FileOpenDialog();
-			if(!String.IsNullOrEmpty(InputPath))
+			if(!String.IsNullOrEmpty(this.InputPath))
 			{
-				if(CheckHr(SHCreateItemFromParsingName(InputPath, null, typeof(IShellItem).GUID, out var item), throwOnError) != 0)
+				if(CheckHr(SHCreateItemFromParsingName(this.InputPath, null, typeof(IShellItem).GUID, out var item), throwOnError) != 0)
 					return null;
 
 				dialog.SetFolder(item);
@@ -50,14 +50,14 @@ namespace Plugin.ReflectionSearch.Controls
 			options = (FOS)SetOptions((Int32)options);
 			dialog.SetOptions(options);
 
-			if(Title != null)
-				dialog.SetTitle(Title);
+			if(this.Title != null)
+				dialog.SetTitle(this.Title);
 
-			if(OkButtonLabel != null)
-				dialog.SetOkButtonLabel(OkButtonLabel);
+			if(this.OkButtonLabel != null)
+				dialog.SetOkButtonLabel(this.OkButtonLabel);
 
-			if(FileNameLabel != null)
-				dialog.SetFileName(FileNameLabel);
+			if(this.FileNameLabel != null)
+				dialog.SetFileName(this.FileNameLabel);
 
 			if(owner == IntPtr.Zero)
 			{
@@ -79,10 +79,10 @@ namespace Plugin.ReflectionSearch.Controls
 			if(CheckHr(result.GetDisplayName(SIGDN.DESKTOPABSOLUTEPARSING, out var path), throwOnError) != 0)
 				return null;
 
-			ResultPath = path;
+			this.ResultPath = path;
 
 			if(CheckHr(result.GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING, out path), false) == 0)
-				ResultName = path;
+				this.ResultName = path;
 			return true;
 		}
 
