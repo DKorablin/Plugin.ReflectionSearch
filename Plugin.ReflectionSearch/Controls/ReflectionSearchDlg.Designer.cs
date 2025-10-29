@@ -36,8 +36,8 @@
 			// 
 			// gbFilter
 			// 
-			this.gbFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.gbFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.gbFilter.Location = new System.Drawing.Point(12, 161);
 			this.gbFilter.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
 			this.gbFilter.Name = "gbFilter";
@@ -72,9 +72,9 @@
 			// 
 			// tvHierarchy
 			// 
-			this.tvHierarchy.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.tvHierarchy.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.tvHierarchy.CheckBoxes = true;
 			this.tvHierarchy.HideSelection = false;
 			this.tvHierarchy.Location = new System.Drawing.Point(12, 12);
@@ -82,8 +82,8 @@
 			this.tvHierarchy.Size = new System.Drawing.Size(260, 146);
 			this.tvHierarchy.TabIndex = 0;
 			this.tvHierarchy.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.tvHierarchy_AfterCheck);
-			this.tvHierarchy.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvHierarchy_AfterSelect);
 			this.tvHierarchy.BeforeSelect += new System.Windows.Forms.TreeViewCancelEventHandler(this.tvHierarchy_BeforeSelect);
+			this.tvHierarchy.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvHierarchy_AfterSelect);
 			// 
 			// ReflectionSearchDlg
 			// 
@@ -103,6 +103,7 @@
 			this.MinimumSize = new System.Drawing.Size(195, 184);
 			this.Name = "ReflectionSearchDlg";
 			this.ShowInTaskbar = false;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Reflection search";
 			this.ResumeLayout(false);
 

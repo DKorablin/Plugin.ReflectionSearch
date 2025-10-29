@@ -57,9 +57,9 @@
 			// 
 			// gridProperties
 			// 
-			this.gridProperties.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.gridProperties.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.gridProperties.Location = new System.Drawing.Point(12, 12);
 			this.gridProperties.Name = "gridProperties";
 			this.gridProperties.Size = new System.Drawing.Size(270, 213);
@@ -82,6 +82,7 @@
 			this.MinimumSize = new System.Drawing.Size(196, 142);
 			this.Name = "AdvancedSearchDlg";
 			this.ShowInTaskbar = false;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Advanced search";
 			this.ResumeLayout(false);
 

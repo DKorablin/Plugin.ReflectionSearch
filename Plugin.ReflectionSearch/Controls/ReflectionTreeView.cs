@@ -45,7 +45,7 @@ namespace Plugin.ReflectionSearch.Controls
 			List<String> result = new List<String>();
 			while(node.Parent != null)
 			{
-				result.Add(node.Text);
+				result.Insert(0, node.Text);
 				node = node.Parent;
 			}
 			return String.Join(".", result.ToArray());
