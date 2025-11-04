@@ -18,10 +18,7 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="SAL.Windows">
-			<ExcludeAssets>runtime</ExcludeAssets>
-		</PackageReference>
-		<PackageReference Include="Newtonsoft.Json" />
+		<PackageReference Include="SAL.Windows" />
 	</ItemGroup>
 
 </Project>
