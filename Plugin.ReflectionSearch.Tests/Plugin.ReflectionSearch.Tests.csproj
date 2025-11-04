@@ -4,6 +4,7 @@
 		<UseWindowsForms>true</UseWindowsForms>
 		<IsPackable>false</IsPackable>
 		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+		<NoWarn>CA1416</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -14,6 +15,13 @@
 		<PackageReference Include="XUnit" />
 		<PackageReference Include="XUnit.Runner.VisualStudio" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="SAL.Windows">
+			<ExcludeAssets>runtime</ExcludeAssets>
+		</PackageReference>
+		<PackageReference Include="Newtonsoft.Json" />
 	</ItemGroup>
 
 </Project>
