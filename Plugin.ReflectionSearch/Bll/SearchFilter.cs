@@ -6,7 +6,8 @@ namespace Plugin.ReflectionSearch.Bll
 	// We can try displaying the entire PEInfo as a tree in
 	// TreeView+Form so that you can specify search conditions for each element.
 	// When searching, get the same tree, but apply the search to each element of the object.
-	internal struct SearchFilter
+	[Serializable]
+	public struct SearchFilter
 	{
 		public Object Value { get; set; }
 

@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net8.0-windows</TargetFramework>
+		<UseWindowsForms>true</UseWindowsForms>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Plugin.ReflectionSearch\Plugin.ReflectionSearch.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="XUnit" />
+		<PackageReference Include="XUnit.Runner.VisualStudio" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" />
+	</ItemGroup>
+
+</Project>

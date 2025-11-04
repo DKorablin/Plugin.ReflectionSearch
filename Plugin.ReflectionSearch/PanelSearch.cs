@@ -14,12 +14,20 @@ using SAL.Windows;
 
 namespace Plugin.ReflectionSearch
 {
-	public partial class PanelSearch : UserControl
+	public partial class PanelSearch : UserControl, IPluginSettings<PanelSearchSettings>
 	{
 		private const String Caption = "Reflection Search";
 
+		private PanelSearchSettings _settings;
+
 		private PluginWindows Plugin => (PluginWindows)this.Window.Plugin;
+
 		private IWindow Window => (IWindow)base.Parent;
+
+		Object IPluginSettings.Settings => this.Settings;
+
+		public virtual PanelSearchSettings Settings
+			=> this._settings ?? (this._settings = new PanelSearchSettings());
 
 		//private static Int32 ThreadPoolCount = 0;
 		private Int32 ThreadsCount = 0;
@@ -28,8 +36,8 @@ namespace Plugin.ReflectionSearch
 		private volatile Boolean ThreadsTerminate = false;
 		private SystemImageList _smallImageList;
 
-		private Dictionary<String, Dictionary<String, SearchFilter>> _pluginsFilters = new Dictionary<String, Dictionary<String, SearchFilter>>();
-		private Dictionary<String,SearchFilter> ReflectionSearch
+		//private Dictionary<String, Dictionary<String, SearchFilter>> _pluginsFilters = new Dictionary<String, Dictionary<String, SearchFilter>>();
+		private Dictionary<String, SearchFilter> ReflectionSearch
 		{
 			get
 			{
@@ -37,7 +45,7 @@ namespace Plugin.ReflectionSearch
 				if(selectedItem == null)
 					return new Dictionary<String, SearchFilter>();
 
-				return this._pluginsFilters.TryGetValue(selectedItem.Text, out Dictionary<String, SearchFilter> result)
+				return this.Settings.PluginsFilters.TryGetValue(selectedItem.Text, out Dictionary<String, SearchFilter> result)
 					? result
 					: new Dictionary<String, SearchFilter>();
 			}
@@ -46,10 +54,10 @@ namespace Plugin.ReflectionSearch
 				ListViewItem selectedItem = lvPlugins.SelectedItems.Count == 0 ? null : lvPlugins.SelectedItems[0];
 				if(selectedItem == null) return;
 
-				if(this._pluginsFilters.ContainsKey(selectedItem.Text))
-					this._pluginsFilters[selectedItem.Text] = value;
+				if(this.Settings.PluginsFilters.ContainsKey(selectedItem.Text))
+					this.Settings.PluginsFilters[selectedItem.Text] = value;
 				else
-					this._pluginsFilters.Add(selectedItem.Text, value);
+					this.Settings.PluginsFilters.Add(selectedItem.Text, value);
 			}
 		}
 
@@ -241,7 +249,7 @@ namespace Plugin.ReflectionSearch
 		private ListViewItem CreateListItem(SearchThreadsArgs args, Int32 index)
 		{
 			ListViewItem result = new ListViewItem();
-			String[] subItems = Array.ConvertAll(new String[lvResult.Columns.Count], (String) => { return String.Empty; });
+			String[] subItems = Array.ConvertAll(new String[lvResult.Columns.Count], s => String.Empty);
 			result.SubItems.AddRange(subItems);
 
 			String filePath = (String)args.ItemsForSearch[index];
@@ -416,10 +424,9 @@ namespace Plugin.ReflectionSearch
 			if(isIdle)
 			{
 				Int32 selectedItemsCount = lvResult.SelectedItems.Count;
-				if(selectedItemsCount <= 1)
-					tsslStatus.Text = "Ready";
-				else
-					tsslStatus.Text = $"{selectedItemsCount:n0} item(s) selected";
+				tsslStatus.Text = selectedItemsCount <= 1
+					? "Ready"
+					: $"{selectedItemsCount:n0} item(s) selected";
 			} else
 				tsslStatus.Text = "Searching... " + extra;
 		}
@@ -493,6 +500,10 @@ namespace Plugin.ReflectionSearch
 			case Keys.Delete:
 				this.cmsResult_ItemClicked(sender, new ToolStripItemClickedEventArgs(tsmiResultDelete));
 				e.Handled = true;
+				break;
+			case Keys.A:
+				if(e.Control && !e.Alt)
+					lvResult.Items.Cast<ListViewItem>().ToList().ForEach(i => i.Selected = true);
 				break;
 			case Keys.Return:
 				if(lvResult.SelectedItems.Count > 0)
