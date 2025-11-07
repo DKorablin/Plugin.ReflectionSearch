@@ -1,9 +1,7 @@
-﻿using System;
-
-namespace Plugin.ReflectionSearch.Bll
+﻿namespace Plugin.ReflectionSearch.Bll
 {
 	/// <summary>Comparison signs</summary>
-	internal enum Sign
+	public enum Sign
 	{
 		/// <summary>==</summary>
 		Equals,
