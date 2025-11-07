@@ -6,13 +6,16 @@
 		<PackageVersion Include="SAL.Windows" Version="1.2.11">
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageVersion>
-		<PackageVersion Include="Newtonsoft.Json" Version="13.0.4"/>
+		<PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
+		<!--Test-->
+		<PackageVersion Include="Moq" Version="4.20.72" />
+		<PackageVersion Include="Moq.AutoMock" Version="3.5.0" />
+		<PackageVersion Include="FluentAssertions" Version="8.8.0" />
 		<!--Analyzers-->
 		<GlobalPackageReference Include="SonarAnalyzer.CSharp" Version="10.8.0.113526">
 			<PrivateAssets>All</PrivateAssets>
 			<IncludeAssets>Runtime; Build; Native; contentfiles; Analyzers; buildtransitive</IncludeAssets>
 		</GlobalPackageReference>
-
 		<PackageVersion Include="XUnit" Version="2.8.1" />
 		<PackageVersion Include="XUnit.Runner.VisualStudio" Version="2.8.1" />
 		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
