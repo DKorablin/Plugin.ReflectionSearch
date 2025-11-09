@@ -6,6 +6,7 @@
 		<IsTestProject>True</IsTestProject>
 		<IsPublishable>False</IsPublishable>
 		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+		<CopyCodeCoverageMetadata>false</CopyCodeCoverageMetadata>
 		<NoWarn>CA1416</NoWarn>
 	</PropertyGroup>
 
