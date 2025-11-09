@@ -1,13 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>net8.0-windows</TargetFrameworks>
+		<TargetFramework>net8.0-windows</TargetFramework>
 		<UseWindowsForms>true</UseWindowsForms>
 		<IsPackable>False</IsPackable>
 		<IsTestProject>True</IsTestProject>
 		<IsPublishable>False</IsPublishable>
 		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
-		<CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
-		<CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
 		<NoWarn>CA1416</NoWarn>
 	</PropertyGroup>
 

@@ -65,7 +65,7 @@ jobs:
       run: msbuild ${{env.SolutionName}}.sln /t:Restore
     - name: Building multi-target project
       run: >
-        msbuild ${{env.SolutionName}}\${{env.SolutionName}}.csproj
+        msbuild ${{env.SolutionName}}.sln
         /p:ArtifactsDir="${{env.ArtifactsDir}}"
         /p:Configuration=Release
         /p:GenerateDocumentationFile=true
