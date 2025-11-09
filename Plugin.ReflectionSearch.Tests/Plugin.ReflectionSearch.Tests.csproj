@@ -2,9 +2,11 @@
 	<PropertyGroup>
 		<TargetFrameworks>net8.0-windows</TargetFrameworks>
 		<UseWindowsForms>true</UseWindowsForms>
-		<IsPackable>false</IsPackable>
-		<IsTestProject>true</IsTestProject>
+		<IsPackable>False</IsPackable>
+		<IsTestProject>True</IsTestProject>
+		<IsPublishable>False</IsPublishable>
 		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+		<CopyCodeCoverageMetadata>false</CopyCodeCoverageMetadata>
 		<NoWarn>CA1416</NoWarn>
 	</PropertyGroup>
 
