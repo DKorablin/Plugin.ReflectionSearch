@@ -65,8 +65,12 @@ jobs:
       run: msbuild ${{env.SolutionName}}.sln /t:Restore
     - name: Building multi-target project
       run: >
-        msbuild ${{env.SolutionName}}.sln
+        msbuild ${{env.SolutionName}}\${{env.SolutionName}}.csproj
         /p:ArtifactsDir="${{env.ArtifactsDir}}"
         /p:Configuration=Release
         /p:GenerateDocumentationFile=true
         /p:SignAssembly=false
+    - name: Listing release directory
+      run: |
+        echo "Listing files in the release directory:"
+        ls ${{env.ArtifactsDir}} -Recurse

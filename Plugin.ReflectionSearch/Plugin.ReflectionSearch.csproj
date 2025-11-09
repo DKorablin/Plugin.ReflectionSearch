@@ -8,6 +8,7 @@
 		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
 		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
+		<CopyCodeCoverageMetadata>false</CopyCodeCoverageMetadata>
 		<CopyLocalLockFileAssemblies>True</CopyLocalLockFileAssemblies>
 		<NoWarn>CA1416</NoWarn>
 	</PropertyGroup>
