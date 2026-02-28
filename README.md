@@ -1,11 +1,16 @@
 # Reflection Search Plugin
 [![Auto build](https://github.com/DKorablin/Plugin.ReflectionSearch/actions/workflows/release.yml/badge.svg)](https://github.com/DKorablin/Plugin.ReflectionSearch/releases/latest)
 
-A powerful plugin extension that enables deep reflection-based searching capabilities in .NET applications. This plugin allows you to search through object properties, fields, and methods using reflection, making it ideal for complex data exploration scenarios.
+[![UI Screenshot](.github/assets/UI-1-200.png)](.github/assets/UI-1.png)
+[![UI Screenshot](.github/assets/UI-2-200.png)](.github/assets/UI-2.png)
+
+A powerful plugin extension that enables deep reflection-based searching capabilities in .NET applications.
+This plugin allows you to search through object properties, fields, and methods using reflection, making it ideal for complex data exploration scenarios.
 
 ## Overview
 
-The Reflection Search plugin serves as an extension for other plugins that need to implement specific data retrieval and search functionality. It provides a framework for searching through object structures using reflection, with support for various comparison operations and deep object traversal.
+The Reflection Search plugin serves as an extension for other plugins that need to implement specific data retrieval and search functionality.
+It provides a framework for searching through object structures using reflection, with support for various comparison operations and deep object traversal.
 
 ## Features
 
