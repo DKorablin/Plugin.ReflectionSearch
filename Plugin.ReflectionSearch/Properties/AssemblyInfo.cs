@@ -5,4 +5,3 @@ using System.Runtime.InteropServices;
 [assembly: System.CLSCompliant(true)]
 
 [assembly: AssemblyDescription("Plugin to search in objects using reflection")]
-[assembly: AssemblyCopyright("Copyright © Danila Korablin 2012-2025")]
