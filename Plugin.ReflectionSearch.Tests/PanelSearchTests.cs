@@ -1,11 +1,9 @@
-﻿using FluentAssertions;
-using Moq;
+﻿using System.Collections.Generic;
+using FluentAssertions;
 using Moq.AutoMock;
 using Plugin.ReflectionSearch.Tests.TestUtils;
 using SAL.Flatbed;
 using SAL.Windows;
-using System;
-using System.Collections.Generic;
 using Xunit;
 
 namespace Plugin.ReflectionSearch.Tests;
@@ -19,7 +17,7 @@ public class PanelSearchTests
 		_mocker = new AutoMocker();
 	}
 
-	[Fact(DisplayName = "PanelSearch should construct successfully")]
+	[Fact]
 	[Trait("Category", "Smoke")]
 	public void PanelSearch_Should_ConstructSuccessfully()
 	{
