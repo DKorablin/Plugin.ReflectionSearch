@@ -1,13 +1,12 @@
 ﻿using System;
-using SAL.Flatbed;
-using System.Diagnostics;
-using SAL.Windows;
 using System.Collections.Generic;
 using Plugin.ReflectionSearch.Bll;
+using SAL.Flatbed;
+using SAL.Windows;
 
 namespace Plugin.ReflectionSearch
 {
-	public class PluginWindows : IPlugin, IPluginDescription
+	public class PluginWindows : IPlugin
 	{
 		private Dictionary<String, DockState> _documentTypes;
 		private IMenuItem _menuSearch;
@@ -16,16 +15,6 @@ namespace Plugin.ReflectionSearch
 		internal ITraceSource Trace { get; }
 
 		internal IHostWindows HostWindows { get; }
-
-		String IPluginDescription.ID => null;
-		String IPluginDescription.Source => null;
-		IPlugin IPluginDescription.Instance => this;
-		IPluginTypeInfo IPluginDescription.Type => null;
-		String IPluginDescription.Name => nameof(PluginWindows);
-		Version IPluginDescription.Version => null;
-		String IPluginDescription.Description => null;
-		String IPluginDescription.Company => null;
-		String IPluginDescription.Copyright => null;
 
 		private Dictionary<String, DockState> DocumentTypes
 		{
@@ -81,7 +70,7 @@ namespace Plugin.ReflectionSearch
 
 			this._menuSearchReflection = menuSearch.Create("Reflection");
 			this._menuSearchReflection.Name = "Search.Reflection";
-			this._menuSearchReflection.Click += (sender, e) => { this.CreateWindow(typeof(PanelSearch).ToString(), true); };
+			this._menuSearchReflection.Click += (sender, e) => this.CreateWindow(typeof(PanelSearch).ToString(), true);
 
 			menuSearch.Items.Add(this._menuSearchReflection);
 			return true;

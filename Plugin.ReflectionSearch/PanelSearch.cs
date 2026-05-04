@@ -20,7 +20,7 @@ namespace Plugin.ReflectionSearch
 
 		private PanelSearchSettings _settings;
 
-		private PluginWindows Plugin => (PluginWindows)this.Window.Plugin;
+		private PluginWindows Plugin => (PluginWindows)this.Window.Plugin.Instance;
 
 		private IWindow Window => (IWindow)base.Parent;
 

@@ -1,8 +1,6 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
-using Moq;
-using Moq.AutoMock;
 using SAL.Flatbed;
 using SAL.Windows;
 
@@ -55,14 +53,38 @@ internal static class WindowTestFactory
 		}
 	}
 
+	public class TestPluginDescription : IPluginDescription
+	{
+		String IPluginDescription.ID => throw new NotImplementedException();
+
+		String IPluginDescription.Source => throw new NotImplementedException();
+
+		public IPlugin Instance { get; }
+
+		IPluginTypeInfo IPluginDescription.Type => throw new NotImplementedException();
+
+		String IPluginDescription.Name => throw new NotImplementedException();
+
+		Version IPluginDescription.Version => throw new NotImplementedException();
+
+		String IPluginDescription.Description => throw new NotImplementedException();
+
+		String IPluginDescription.Company => throw new NotImplementedException();
+
+		String IPluginDescription.Copyright => throw new NotImplementedException();
+
+		public TestPluginDescription(IPlugin plugin)
+			=> this.Instance = plugin;
+	}
+
 	/// <summary>Creates a test window instance with sensible defaults</summary>
-	public static TestWindowControl CreateTestWindow(IPluginDescription pluginMock)
+	public static TestWindowControl CreateTestWindow(IPlugin plugin)
 	{
 		var mockControl = new Control();
 		var window = new TestWindowControl
 		{
 			Caption = "Test Window",
-			Plugin = pluginMock,
+			Plugin = new TestPluginDescription(plugin),
 			Control = mockControl,
 			Object = mockControl
 		};
