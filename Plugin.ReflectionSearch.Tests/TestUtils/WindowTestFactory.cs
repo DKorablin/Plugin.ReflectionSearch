@@ -15,7 +15,7 @@ internal static class WindowTestFactory
 	/// <remarks>This is a workaround since IWindow comes from an external package</remarks>
 	public class TestWindowControl : Control, IWindow
 	{
-		public IPlugin Plugin { get; set; }
+		public IPluginDescription Plugin { get; set; }
 
 		public Object Control { get; set; }
 
@@ -56,7 +56,7 @@ internal static class WindowTestFactory
 	}
 
 	/// <summary>Creates a test window instance with sensible defaults</summary>
-	public static TestWindowControl CreateTestWindow(IPlugin pluginMock)
+	public static TestWindowControl CreateTestWindow(IPluginDescription pluginMock)
 	{
 		var mockControl = new Control();
 		var window = new TestWindowControl

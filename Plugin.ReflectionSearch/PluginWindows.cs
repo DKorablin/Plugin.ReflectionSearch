@@ -7,16 +7,25 @@ using Plugin.ReflectionSearch.Bll;
 
 namespace Plugin.ReflectionSearch
 {
-	public class PluginWindows : IPlugin
+	public class PluginWindows : IPlugin, IPluginDescription
 	{
-		private TraceSource _trace;
 		private Dictionary<String, DockState> _documentTypes;
 		private IMenuItem _menuSearch;
 		private IMenuItem _menuSearchReflection;
 
-		internal TraceSource Trace => this._trace ?? (this._trace = PluginWindows.CreateTraceSource<PluginWindows>());
+		internal ITraceSource Trace { get; }
 
 		internal IHostWindows HostWindows { get; }
+
+		String IPluginDescription.ID => null;
+		String IPluginDescription.Source => null;
+		IPlugin IPluginDescription.Instance => this;
+		IPluginTypeInfo IPluginDescription.Type => null;
+		String IPluginDescription.Name => nameof(PluginWindows);
+		Version IPluginDescription.Version => null;
+		String IPluginDescription.Description => null;
+		String IPluginDescription.Company => null;
+		String IPluginDescription.Copyright => null;
 
 		private Dictionary<String, DockState> DocumentTypes
 		{
@@ -31,8 +40,11 @@ namespace Plugin.ReflectionSearch
 			}
 		}
 
-		public PluginWindows(IHostWindows hostWindows)
-			=> this.HostWindows = hostWindows ?? throw new ArgumentNullException(nameof(hostWindows));
+		public PluginWindows(IHostWindows hostWindows, ITraceSource trace)
+		{
+			this.HostWindows = hostWindows ?? throw new ArgumentNullException(nameof(hostWindows));
+			this.Trace = trace ?? throw new ArgumentNullException(nameof(trace));
+		}
 
 		public IWindow GetPluginControl(String typeName, Object args)
 			=> this.CreateWindow(typeName, false, args);
@@ -88,14 +100,5 @@ namespace Plugin.ReflectionSearch
 			=> this.DocumentTypes.TryGetValue(typeName, out DockState state)
 				? this.HostWindows.Windows.CreateWindow(this, typeName, searchForOpened, state, args)
 				: null;
-
-		private static TraceSource CreateTraceSource<T>(String name = null) where T : IPlugin
-		{
-			TraceSource result = new TraceSource(typeof(T).Assembly.GetName().Name + name);
-			result.Switch.Level = SourceLevels.All;
-			result.Listeners.Remove("Default");
-			result.Listeners.AddRange(System.Diagnostics.Trace.Listeners);
-			return result;
-		}
 	}
 }

@@ -33,10 +33,11 @@ public class PanelSearchTests
 		var hostWindowsMock = _mocker.GetMock<IHostWindows>();
 		hostWindowsMock.SetupGet(h => h.Plugins).Returns(pluginStorageMock.Object);
 		
-		// Create PluginWindows with the mocked IHostWindows
-		var plugin = new PluginWindows(hostWindowsMock.Object);
+		// Create PluginWindows with the mocked IHostWindows and ITraceSource
+		ITraceSource traceMock = _mocker.GetMock<ITraceSource>().Object;
+		PluginWindows plugin = new PluginWindows(hostWindowsMock.Object, traceMock);
 		
-		var testWindow = WindowTestFactory.CreateTestWindow(plugin);
+		WindowTestFactory.TestWindowControl testWindow = WindowTestFactory.CreateTestWindow(plugin);
 		
 		// Act
 		using (var form = new PanelSearch() { Parent = testWindow, })
