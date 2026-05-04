@@ -1,4 +1,4 @@
-# Reflection Search Plugin
+﻿# Reflection Search Plugin
 [![Auto build](https://github.com/DKorablin/Plugin.ReflectionSearch/actions/workflows/release.yml/badge.svg)](https://github.com/DKorablin/Plugin.ReflectionSearch/releases/latest)
 
 [![UI Screenshot](.github/assets/UI-1-200.png)](.github/assets/UI-1.png)
@@ -87,5 +87,5 @@ public class YourSearchPlugin : IPlugin
 
 ## Supported Frameworks
 
-- .NET Framework 3.5
+- .NET Framework 4.8
 - .NET 8.0 Windows
